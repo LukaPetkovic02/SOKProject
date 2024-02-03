@@ -87,32 +87,32 @@ class ConcreteEdge(Edge):
 
 graph = Graph(False)
 
-concrete_node = ConcreteNode(name="My Node")
-print("node1: ")
-print(concrete_node.to_json())
-
-concrete_node2 = ConcreteNode(name="My Node 2")
-print("node1: ")
-print(concrete_node2.to_json())
-
-concrete_edge = ConcreteEdge(node1=concrete_node, node2=concrete_node2)
-print("edge: ")
-print(concrete_edge.to_json())
-
-concrete_edge2 = ConcreteEdge(node1=concrete_node2, node2=concrete_node)
-print("edge: ")
-print(concrete_edge2.to_json())
-
-
-print(graph.add_edge(concrete_edge))
-print(graph.add_node(concrete_node))
-print(graph.add_node(concrete_node2))
-print(graph.add_edge(concrete_edge))
-print(graph.add_edge(concrete_edge))
-print(graph.add_edge(concrete_edge2))
-
-for edge in graph.edges.values():
-    print(edge.to_json())
-
-for node in graph.nodes.values():
-    print(node.to_json())
+# concrete_node = ConcreteNode(name="My Node")
+# print("node1: ")
+# print(concrete_node.to_json())
+#
+# concrete_node2 = ConcreteNode(name="My Node 2")
+# print("node2: ")
+# print(concrete_node2.to_json())
+#
+# concrete_edge = ConcreteEdge(node1=concrete_node, node2=concrete_node2)
+# print("edge1: ")
+# print(concrete_edge.to_json())
+#
+# concrete_edge2 = ConcreteEdge(node1=concrete_node2, node2=concrete_node)
+# print("edge2: ")
+# print(concrete_edge2.to_json())
+#
+#
+# print(graph.add_edge(concrete_edge))
+# print(graph.add_node(concrete_node))
+# print(graph.add_node(concrete_node2))
+# print(graph.add_edge(concrete_edge))
+# print(graph.add_edge(concrete_edge))
+# print(graph.add_edge(concrete_edge2))
+#
+# for edge in graph.edges.values():
+#     print(edge.to_json())
+#
+# for node in graph.nodes.values():
+#     print(node.to_json())
