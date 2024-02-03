@@ -42,7 +42,7 @@ class JSONGraphDataSource:
 
 
 if __name__ == "__main__":
-    json_file_path = "./resources/example.json"
+    json_file_path = "../resources/example.json"
     json_data_source = JSONGraphDataSource(json_file_path)
     json_data = json_data_source.parse_json()
     graph = json_data_source.generate_graph(json_data)
