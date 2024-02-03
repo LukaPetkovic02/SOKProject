@@ -1,4 +1,8 @@
-from django.http import HttpResponse
+# from django.http import HttpResponse
+#
+# def index(request):
+#     return HttpResponse("Welcome to my Django site!")
+from django.shortcuts import render
 
-def index(request):
-    return HttpResponse("Welcome to my Django site!")
+def my_view(request):
+    return render(request, 'my_template.html')
