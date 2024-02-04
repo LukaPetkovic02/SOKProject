@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        {% load static %}
+        <script type="text/javascript" src="https://d3js.org/d3.v3.js">
+            import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+        </script>
+    </head>
+    <style>
+        body,
+        html {
+            font-family: "Roboto", sans-serif;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+        }
+
+        .leftSide {
+            width: 22%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visualizerHeader {
+            background-color: lightblue;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .graphVisualiserTitle {
+            font-size: 28px;
+        }
+
+        .viewButtons {
+            background-color: lightgreen;
+            width: 100%;
+            display: flex;
+        }
+
+        .simpleViewButton,
+        .blockViewButton {
+            flex: 1;
+            text-align: center;
+            height: 35px;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+        .viewContainer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .treeViewContainer {
+            background-color: lightpink;
+            height: 60%;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .birdViewContainer {
+            background-color: lightgrey;
+            height: 40%;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .rightSide {
+            background-color: lightseagreen;
+            width: 78%;
+        }
+
+        .rightSideHeader {
+            background-color: lightsalmon;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 106px;
+        }
+
+        .fileSearchContainer {
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+        .filterContainer {
+            text-align: center;
+            line-height: 34px;
+            font-size: 18px;
+        }
+
+        .appliedQueriesContainer {
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+        .breakline {
+            height: 1px;
+            background-color: grey;
+            width: 100%;
+        }
+
+        .breaklineVertical {
+            height: 100%;
+            width: 1px;
+            background-color: grey;
+        }
+
+        .breaklineVerticalButtons {
+            height: 35px;
+            width: 1px;
+            background-color: grey;
+        }
+    </style>
+    <body>
+        <div class="mainContainer">
+            <div class="leftSide">
+                <div class="visualizerHeader">
+                    <h1 class="graphVisualiserTitle">Graph Visualizer</h1>
+                    <div class="breakline"></div>
+                    <div class="viewButtons">
+                        <a class="simpleViewButton">Simple View</a>
+                        <div class="breaklineVerticalButtons"></div>
+                        <a class="blockViewButton">Block View</a>
+                    </div>
+                </div>
+                <div class="viewContainer">
+                    <div class="breakline"></div>
+                    <div class="treeViewContainer">Here goes treeView</div>
+                    <div class="breakline"></div>
+                    <div class="birdViewContainer">Here goes birdView</div>
+                </div>
+            </div>
+            <div class="rightSide">
+                <div class="rightSideHeader">
+                    <div class="fileSearchContainer">Here goes File Search</div>
+                    <div class="breakline"></div>
+                    <div class="filterContainer">Here goes Filter</div>
+                    <div class="breakline"></div>
+                    <div class="appliedQueriesContainer">Here go Queries</div>
+                    <div class="breakline"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
