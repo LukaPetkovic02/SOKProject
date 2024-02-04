@@ -1,8 +1,11 @@
 import xml.etree.ElementTree as ET
 from api.api.model.Graph import Graph, ConcreteNode, ConcreteEdge
+from api.api.service.DataSourceService import DataSourceService
 
-def parse_xml_to_graph(xml_file_path):
-    with open(xml_file_path, 'r') as file:
+
+class XMLDataSourcePlugin(DataSourceService):
+
+    def parse(self, xml_file_path):
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
         data = root.findall('entity')
