@@ -7,7 +7,7 @@ setup(
     install_requires=['d3-platform>=0.1'],
     entry_points = {
         'graph.load':
-            ['graph_load_json=XMLDataSourcePlugin.XMLDataSourcePlugin:XMLDataSourcePlugin'],
+            ['graph_load_xml=XMLDataSourcePlugin.XMLDataSourcePlugin:XMLDataSourcePlugin'],
     },
     zip_safe=True
 )

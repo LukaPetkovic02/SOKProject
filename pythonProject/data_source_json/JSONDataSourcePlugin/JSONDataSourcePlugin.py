@@ -4,6 +4,9 @@ from api.service.DataSourceService import DataSourceService
 
 
 class JSONDataSourcePlugin(DataSourceService):
+    def name(self):
+        return("JSON")
+
     def parse(self, json_file_path):
         with open(json_file_path, 'r') as file:
             data = json.load(file)

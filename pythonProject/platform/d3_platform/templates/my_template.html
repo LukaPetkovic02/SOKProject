@@ -127,6 +127,9 @@
         }
     </style>
     <body>
+        <div>
+
+          </div>
         <div class="mainContainer">
             <div class="leftSide">
                 <div class="visualizerHeader">
@@ -147,7 +150,18 @@
             </div>
             <div class="rightSide">
                 <div class="rightSideHeader">
-                    <div class="fileSearchContainer">Here goes File Search</div>
+                    <div class="fileSearchContainer">
+                        {% if plugini_ucitavanje %}
+                        <div>
+                             {% for p in plugini_ucitavanje %}
+                                {{p.name}}
+                                &nbsp;
+                             {% endfor %}
+                        </div>
+                        {% else %}
+                            <div>Nema prepoznatih plugina za ucitavanje</div>
+                        {% endif %}
+                    </div>
                     <div class="breakline"></div>
                     <div class="filterContainer">Here goes Filter</div>
                     <div class="breakline"></div>
