@@ -1,4 +1,4 @@
-from api.api.model.abstract.Node import Node
+from api.model.abstract.Node import Node
 
 
 class ConcreteNode(Node):

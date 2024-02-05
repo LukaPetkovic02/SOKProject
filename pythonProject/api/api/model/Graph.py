@@ -1,5 +1,5 @@
-from api.api.model.abstract.Edge import Edge
-from api.api.model.abstract.Node import Node
+from api.model.abstract.Edge import Edge
+from api.model.abstract.Node import Node
 
 
 class Graph:

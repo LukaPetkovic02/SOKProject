@@ -1,9 +1,9 @@
 from django.apps.registry import apps
 from django.shortcuts import render
 
-from api.api.model.ConcreteEdge import ConcreteEdge
-from api.api.model.ConcreteNode import ConcreteNode
-from api.api.model.Graph import Graph
+from api.model.ConcreteEdge import ConcreteEdge
+from api.model.ConcreteNode import ConcreteNode
+from api.model.Graph import Graph
 
 
 def force_layout(request):
