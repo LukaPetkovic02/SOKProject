@@ -20,7 +20,5 @@ from .views import my_view
 
 urlpatterns = [
     path('', my_view, name='index'),
-    path('polls/', include('polls.urls')),
-    path('block/', include('block_visualizer.urls')),
-    path('admin/', admin.site.urls),
+
 ]

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from uuid import uuid4
+
 from api.model.abstract.Node import Node
 
 
