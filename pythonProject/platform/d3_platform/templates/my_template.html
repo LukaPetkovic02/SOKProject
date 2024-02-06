@@ -96,6 +96,34 @@
             font-size: 18px;
         }
 
+        .fileInputField {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        .fileInputButton {
+            padding: 6px 14px;
+            background-color: #4CAF50;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .fileInputButton:hover {
+            background-color: #45a049;
+        }
+
         .filterContainer {
             text-align: center;
             line-height: 34px;
@@ -151,7 +179,15 @@
             <div class="rightSide">
                 <div class="rightSideHeader">
                     <div class="fileSearchContainer">
-                        {% if plugini_ucitavanje %}
+                        <div>
+                            File:
+                            &nbsp;
+                            <input class="fileInputField" type="text" />
+                            <button class="fileInputButton">Submit</button>
+                        </div>
+                        
+
+                        <!-- {% if plugini_ucitavanje %}
                         <div>
                              {% for p in plugini_ucitavanje %}
                                 {{p.name}}
@@ -160,20 +196,20 @@
                         </div>
                         {% else %}
                             <div>Nema prepoznatih plugina za ucitavanje</div>
-                        {% endif %}
+                        {% endif %} -->
                     </div>
                     <div class="breakline"></div>
                     <div class="filterContainer">Here goes Filter
-                    {% if graph %}
-                        <div>
-                             {% for p in graph.nodes.values %}
-                                {{p}}
-                                &nbsp;
-                             {% endfor %}
-                        </div>
-                        {% else %}
-                            <div>Nema prepoznatog grafa</div>
-                        {% endif %}
+<!--                    {% if graph %}-->
+<!--                        <div>-->
+<!--                             {% for p in graph.nodes.values %}-->
+<!--                                {{p}}-->
+<!--                                &nbsp;-->
+<!--                             {% endfor %}-->
+<!--                        </div>-->
+<!--                        {% else %}-->
+<!--                            <div>Nema prepoznatog grafa</div>-->
+<!--                        {% endif %}-->
                     </div>
                     <div class="breakline"></div>
                     <div class="appliedQueriesContainer">Here go Queries</div>
@@ -182,4 +218,16 @@
             </div>
         </div>
     </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            var button = document.querySelector('.fileInputButton');
+
+            button.addEventListener('click', function() {
+                var id = document.querySelector('.fileInputField').value;
+                var url = '/ucitavanje/plugin/' + id;
+                window.location.href = url;
+            });
+        });
+    </script>
 </html>

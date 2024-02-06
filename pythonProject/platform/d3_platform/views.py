@@ -1,3 +1,5 @@
+import os
+
 from django.apps.registry import apps
 from django.shortcuts import render, redirect
 
@@ -16,23 +18,25 @@ def index(request):
                                                 "graph":graph})
 
 
-def ucitavanje_plugin(request, id):
+def ucitavanje_plugin(request, file_name):
     # Cuvanje identifikatora plugina na nivou sesije.
-    request.session['izabran_plugin_ucitavanje'] = id
+    _, file_extension = os.path.splitext(file_name)
+    file_extension = file_extension[1:]
+
+    request.session['izabran_plugin_ucitavanje'] = file_extension
     plugini = apps.get_app_config('d3_platform').plugini_ucitavanje
     graph = D3PlatformConfig.graph
     # Trazimo plugin sa prosledjenim identifikatorom,
     for i in plugini:
-        print(i.name())
-        if i.name() == id:
+        if i.name() == file_extension.upper():
             # te pozivamo funkciju koja podatke upisuje u bazu.
-            if(id=="JSON"):
+            if(file_extension.upper()=="JSON"):
                 print("NASAO "+i.name())
-                graph = i.parse("../resources/example.json")
+                graph = i.parse("../resources/" + file_name)
                 #print(graph)
-            elif(id=="XML"):
+            elif(file_extension.upper()=="XML"):
                 print("NASAO " + i.name())
-                graph = i.parse("../resources/example.xml")
+                graph = i.parse("../resources/" + file_name)
             #i.ucitati()
     D3PlatformConfig.graph = graph
     return redirect("/")

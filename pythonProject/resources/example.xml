@@ -1,15 +1,15 @@
 <entities>
-    <entity id="28dddab1-4aa7-6e2b-b0b2-7ed9096aa9bc" name="I'm parent">
+    <entity id="28dddab1-4aa7-6e2b-b0b2-7ed9096aa9bc" name="I'm parent xml">
         <children>
             <child ref="6616c598-0a0a-8263-7a56-fb0c0e16225a"/>
             <child ref="940e60e4-9497-7c0d-3467-297ff8bb9ef2"/>
         </children>
     </entity>
-    <entity id="6616c598-0a0a-8263-7a56-fb0c0e16225a" name="I'm first child">
+    <entity id="6616c598-0a0a-8263-7a56-fb0c0e16225a" name="I'm first child xml">
         <children>
             <child ref="3e61c2a5-b292-4a5c-b860-5824fd497511"/>
         </children>
     </entity>
-    <entity id="3e61c2a5-b292-4a5c-b860-5824fd497511" name="I'm the new child"/>
-    <entity id="940e60e4-9497-7c0d-3467-297ff8bb9ef2" name="I'm second child"/>
+    <entity id="3e61c2a5-b292-4a5c-b860-5824fd497511" name="I'm the new child xml"/>
+    <entity id="940e60e4-9497-7c0d-3467-297ff8bb9ef2" name="I'm second child xml"/>
 </entities>
