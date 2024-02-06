@@ -3,9 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         {% load static %}
-        <script type="text/javascript" src="https://d3js.org/d3.v3.js">
-            import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-        </script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
     </head>
     <style>
         body,
@@ -27,6 +26,7 @@
 
         .leftSide {
             width: 22%;
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
@@ -79,7 +79,10 @@
 
         .rightSide {
             background-color: lightseagreen;
+            display: flex;
+            flex-direction: column;
             width: 78%;
+            height: 100%;
         }
 
         .rightSideHeader {
@@ -170,6 +173,10 @@
             width: 1px;
             background-color: grey;
         }
+        .graph_view{
+            height: inherit;
+            background: aliceblue;
+        }
     </style>
     <body>
         <div>
@@ -249,6 +256,9 @@
                         {% endif %}
                     </div>
                     <div class="breakline"></div>
+                </div>
+                <div id="main" class="graph_view">
+                    {{graph_view|safe}}
                 </div>
             </div>
         </div>

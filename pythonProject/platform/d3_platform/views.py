@@ -10,12 +10,20 @@ from .apps import D3PlatformConfig
 
 def index(request):
     plugini = apps.get_app_config('d3_platform').plugini_ucitavanje
+    plugins_visualizers=apps.get_app_config('d3_platform').visualizer_plugins
     graph = D3PlatformConfig.graph
+    str=""
+   # if(graph==None):
+   #     print("NE POSTOJI JOS")
+   # else:
+   #     str=plugins_visualizers[0].visualizeGraph(graph)
+   # return render(request, "my_template.html", {"plugini_ucitavanje": plugini,"graph":graph,"graph_view":str})
     whole_graph = D3PlatformConfig.whole_graph
     queries = D3PlatformConfig.queries
     if(graph==None):
         print("NE POSTOJI JOS")
     else:
+        str=plugins_visualizers[0].visualizeGraph(graph)
         for node_id, node in graph.nodes.items():
             print(f"{node_id} {node.name} {node.get_data()}")
 
@@ -26,7 +34,7 @@ def index(request):
         for node_id, node in whole_graph.nodes.items():
             print(f"{node_id} {node.name} {node.get_data()}")
     return render(request, "my_template.html", {"plugini_ucitavanje": plugini,
-                                                "graph":graph, "queries":queries})
+                                                "graph":graph, "queries":queries, "graph_view":str})
 def reset(request):
     whole_graph = D3PlatformConfig.whole_graph
     D3PlatformConfig.graph = whole_graph
