@@ -19,6 +19,7 @@ from django.urls import include, path
 from .views import my_view
 
 urlpatterns = [
-    path('', my_view, name='index'),
-
+    path('', include('d3_platform.urls')),
+    path('polls/', include('polls.urls')),
+    path('admin/', admin.site.urls),
 ]

@@ -4,6 +4,8 @@ from api.service.DataSourceService import DataSourceService
 
 
 class XMLDataSourcePlugin(DataSourceService):
+    def name(self):
+        return("XML")
 
     def parse(self, xml_file_path):
         tree = ET.parse(xml_file_path)

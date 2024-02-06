@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 def index(request):
     plugini = apps.get_app_config('d3_platform').plugini_ucitavanje
-    return render(request, "index.html", {"title": "Index", "plugini_ucitavanje": plugini})
+    return render(request, "my_template.html", {"plugini_ucitavanje": plugini})
 
 
 def ucitavanje_plugin(request, id):
