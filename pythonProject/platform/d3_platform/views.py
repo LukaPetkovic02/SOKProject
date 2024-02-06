@@ -9,8 +9,6 @@ from .apps import D3PlatformConfig
 def index(request):
     plugini = apps.get_app_config('d3_platform').plugini_ucitavanje
     plugins_visualizers=apps.get_app_config('d3_platform').visualizer_plugins
-    # grap=plugini[0].parse("/Users/borislavcelar/Documents/GitHub/SOKProject/pythonProject/resources/example.json")
-    # str=plugins_visualizers[0].visualizeGraph(grap)
     graph = D3PlatformConfig.graph
     str=""
     if(graph==None):
