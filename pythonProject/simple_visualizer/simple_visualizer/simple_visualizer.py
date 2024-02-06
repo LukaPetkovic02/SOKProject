@@ -1,3 +1,5 @@
+from api.model.abstract.Visualizer import Visualizer
+
 class SimpleVisualizer(Visualizer):
     def generate_graph(self, graph):
         if graph.directed:
