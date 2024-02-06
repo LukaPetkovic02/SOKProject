@@ -1,9 +1,16 @@
 import json
-from api.api.model.Graph import Graph, ConcreteNode, ConcreteEdge
-from api.api.service.DataSourceService import DataSourceService
+
+from api.model.ConcreteEdge import ConcreteEdge
+from api.model.ConcreteNode import ConcreteNode
+from api.service.DataSourceService import DataSourceService
+
+from api.model.Graph import Graph
 
 
 class JSONDataSourcePlugin(DataSourceService):
+    def name(self):
+        return("JSON")
+
     def parse(self, json_file_path):
         with open(json_file_path, 'r') as file:
             data = json.load(file)

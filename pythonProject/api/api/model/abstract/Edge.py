@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from uuid import uuid4
-from api.api.model.abstract.Node import Node
+from api.model.abstract.Node import Node
 
 
 class Edge(ABC):

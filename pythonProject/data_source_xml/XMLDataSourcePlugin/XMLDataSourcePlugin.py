@@ -1,9 +1,13 @@
 import xml.etree.ElementTree as ET
-from api.api.model.Graph import Graph, ConcreteNode, ConcreteEdge
-from api.api.service.DataSourceService import DataSourceService
+from api.model.Graph import Graph
+from api.model.ConcreteEdge import ConcreteEdge
+from api.model.ConcreteNode import ConcreteNode
+from api.service.DataSourceService import DataSourceService
 
 
 class XMLDataSourcePlugin(DataSourceService):
+    def name(self):
+        return("XML")
 
     def parse(self, xml_file_path):
         tree = ET.parse(xml_file_path)
