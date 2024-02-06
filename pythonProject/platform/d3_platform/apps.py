@@ -5,11 +5,15 @@ from django.apps import AppConfig
 class D3PlatformConfig(AppConfig):
     name = 'd3_platform'
     plugini_ucitavanje = []
+    queries = []
+    whole_graph = None
     graph = None
     def ready(self):
         # Prilikom startovanja aplikacije, ucitavamo plugine na
         # vec poznati nacin.
         self.plugini_ucitavanje = load_plugins("graph.load")
+        self.queries = []
+        self.whole_graph=None
         self.graph=None
 
 def load_plugins(oznaka):

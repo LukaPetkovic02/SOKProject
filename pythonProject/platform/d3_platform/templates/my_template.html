@@ -124,6 +124,23 @@
             background-color: #45a049;
         }
 
+        .resetButton {
+            padding: 6px 14px;
+            background-color: red;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .resetButton:hover {
+            background-color: darkred;
+        }
+
         .filterContainer {
             text-align: center;
             line-height: 34px;
@@ -182,10 +199,16 @@
                         <div>
                             File:
                             &nbsp;
-                            <input class="fileInputField" type="text" />
-                            <button class="fileInputButton">Submit</button>
+                            <input id="fileInputField" class="fileInputField" type="text" />
+                            <button id="fileInputButton" class="fileInputButton">Submit</button>
+
+                            Search phrase:
+                            &nbsp;
+                            <input id="searchInputField" class="fileInputField" type="text" />
+                            <button id="searchInputButton" class="fileInputButton">Search</button>
+
+                            <button id="resetButton" class="resetButton">Reset all queries</button>
                         </div>
-                        
 
                         <!-- {% if plugini_ucitavanje %}
                         <div>
@@ -212,7 +235,19 @@
 <!--                        {% endif %}-->
                     </div>
                     <div class="breakline"></div>
-                    <div class="appliedQueriesContainer">Here go Queries</div>
+                    <div class="appliedQueriesContainer">
+                        {% if queries %}
+                        <div>
+                            Queries:
+                             {% for p in queries %}
+                                {{p}}
+                                &nbsp;
+                             {% endfor %}
+                        </div>
+                        {% else %}
+                            <div>No queries</div>
+                        {% endif %}
+                    </div>
                     <div class="breakline"></div>
                 </div>
             </div>
@@ -221,11 +256,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            var button = document.querySelector('.fileInputButton');
+            var button = document.querySelector('#fileInputButton');
 
             button.addEventListener('click', function() {
-                var id = document.querySelector('.fileInputField').value;
+                var id = document.querySelector('#fileInputField').value;
                 var url = '/ucitavanje/plugin/' + id;
+                window.location.href = url;
+            });
+
+            var searchButton = document.querySelector('#searchInputButton');
+
+            searchButton.addEventListener('click', function() {
+                var input = document.querySelector('#searchInputField').value;
+                var url = '/search/' + input;
+                window.location.href = url;
+            });
+
+            var resetButton = document.querySelector('#resetButton');
+
+            resetButton.addEventListener('click', function() {
+                var url = '/reset';
                 window.location.href = url;
             });
         });
