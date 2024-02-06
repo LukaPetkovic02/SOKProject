@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
-from api.model import Graph, ConcreteNode, ConcreteEdge
+from api.model.Graph import Graph
+from api.model.ConcreteEdge import ConcreteEdge
+from api.model.ConcreteNode import ConcreteNode
 from api.service.DataSourceService import DataSourceService
 
 

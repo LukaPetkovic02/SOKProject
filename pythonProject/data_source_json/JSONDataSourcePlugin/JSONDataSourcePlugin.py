@@ -1,6 +1,10 @@
 import json
-from api.model import Graph, ConcreteNode, ConcreteEdge
+
+from api.model.ConcreteEdge import ConcreteEdge
+from api.model.ConcreteNode import ConcreteNode
 from api.service.DataSourceService import DataSourceService
+
+from api.model.Graph import Graph
 
 
 class JSONDataSourcePlugin(DataSourceService):

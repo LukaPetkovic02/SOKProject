@@ -4,7 +4,7 @@ from api.model.abstract.Node import Node
 
 class Graph:
     def __init__(self, value: bool):
-        super(Graph, self).__init__()
+        # super(Graph, self).__init__()
         self._nodes = {}
         self._edges = {}
         self._directed = value

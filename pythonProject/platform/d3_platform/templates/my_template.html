@@ -163,7 +163,18 @@
                         {% endif %}
                     </div>
                     <div class="breakline"></div>
-                    <div class="filterContainer">Here goes Filter</div>
+                    <div class="filterContainer">Here goes Filter
+                    {% if graph %}
+                        <div>
+                             {% for p in graph.nodes.values %}
+                                {{p}}
+                                &nbsp;
+                             {% endfor %}
+                        </div>
+                        {% else %}
+                            <div>Nema prepoznatog grafa</div>
+                        {% endif %}
+                    </div>
                     <div class="breakline"></div>
                     <div class="appliedQueriesContainer">Here go Queries</div>
                     <div class="breakline"></div>
