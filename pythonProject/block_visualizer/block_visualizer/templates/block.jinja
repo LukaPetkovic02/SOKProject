@@ -4,8 +4,8 @@
         {% for key, value in graph_nodes.items() %}
 
             {
-                id:'{{key}}',
-                name:'{{ value.name }}'
+                id:"{{key}}",
+                name:"{{ value.name }}"
             },
 
         {% endfor %}
@@ -15,8 +15,8 @@
         {% for key, value in graph_edges.items() %}
 
             {
-                source:'{{value.node1.id}}',
-                target:'{{ value.node2.id }}'
+                source:"{{value.node1.id}}",
+                target:"{{ value.node2.id }}"
             },
 
         {% endfor %}
@@ -27,18 +27,31 @@
 
     var parentDiv = d3.select("#main");
 
-    var svg = parentDiv.append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%");
-
     var parentWidth = parentDiv.node().getBoundingClientRect().width;
     var parentHeight = parentDiv.node().getBoundingClientRect().height;
 
+    //zoom var
+    var zoomk=1
+
+    var svg = parentDiv.append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("viewBox", "0 0 " + parentWidth + " " + parentHeight)
+        .attr("pointer-events", "all")
+        .call(d3.drag().on("drag", draggedd))
+        .call(d3.zoom().on("zoom", handleZoom));
+
+
+        // Update SVG dimensions when the window resizes
+
     // Force Simulation
     var simulation = d3.forceSimulation(nodes.concat(selfLoops))
-        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 150; })) // Set the desired distance between nodes
+        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 300; })) // Set the desired distance between nodes
         .force("charge", d3.forceManyBody().strength(-20)) // Set a low repulsion force
-        .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2));
+        .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
+        .force("x", d3.forceX(parentWidth / 2).strength(0.05))
+        .force("y", d3.forceY(parentHeight / 2).strength(0.05))
+        .force("collide", d3.forceCollide().strength(1).radius( (d) => 120  ).iterations(1));
 
     // Link Creation
     var link = svg.append("g")
@@ -67,20 +80,21 @@
           return "M " + (x + r) + "," + y + " A " + (r*1.5) + "," + (r*1.5) + " 0 1,0 " + (x - r) + "," + y; // Dynamically calculate the self-loop path
         });
 
-    // Node Creation
     var node = svg.append("g")
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
-      .selectAll("circle")
-      .data(nodes)
-      .enter().append("circle")
-        .attr("r", 20)  // Adjust the radius of the circle to make it bigger
+        .selectAll("rect")  // Use rectangles instead of circles
+        .data(nodes)
+        .enter().append("rect")  // Append rectangles
+        .attr("width", 200)  // Set the width of the rectangle
+        .attr("height", 100)  // Set the height of the rectangle
         .attr("fill", "#000")
-        // Add drag behavior to nodes
+
         .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
 
     // Text inside the Circle
     var text = svg.append("g").selectAll("text")
@@ -89,8 +103,19 @@
         .text(function(d) { return d.name; })
         .attr("fill", "#fff")  // Set text color
         .attr("font-size", "12px")  // Set text font size
-        .attr("text-anchor", "middle")  // Center the text horizontally
+        .attr("text-anchor", "left")  // Center the text horizontally
         .attr("dy", ".35em");  // Adjust vertical alignment of text
+
+        var label = svg.append("g").selectAll("text")
+    .data(nodes)
+    .enter().append("text")
+        .text(function(d) { return d.id })
+        .attr("fill", "#fff")  // Set text color
+        .attr("font-size", "10px")  // Set text font size
+        .attr("text-anchor", "left")  // Center the text horizontally
+        .attr("dy", "1.2em"); // Center the text vertically
+
+
 
     // Tooltip Creation
     node.append("title")
@@ -114,32 +139,22 @@
             });
 
         node
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
+            .attr("x", d => d.x - 20)  // Adjust position based on rectangle width
+            .attr("y", d => d.y - 15);  // Adjust position based on rectangle height
+
 
         // Update text position with nodes
         text
-            .attr("x", function(d) { return d.x; })
+            .attr("x", function(d) { return d.x-10; })
             .attr("y", function(d) { return d.y; });
+
+        label.attr("x", function(d){ return d.x-10; })
+            .attr("y", function (d) {return d.y+20; });
+
     });
 
-    window.addEventListener("resize", function () {
-            // Update the force simulation center on resize
-            updateSimulationCenter();
-        });
-
-
-    function updateSimulationCenter() {
-            var parentWidth = parentDiv.node().getBoundingClientRect().width;
-            var parentHeight = parentDiv.node().getBoundingClientRect().height;
-
-            // Update the center force of the simulation
-            simulation.force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
-                .alpha(1)  // Restart the simulation to take the changes into account
-                .restart();
-        }
-
     // Drag functions
+
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -156,4 +171,74 @@
         d.fx = null;
         d.fy = null;
     }
+
+
+    //Pan and zoom functions
+
+    function handleZoom() {
+        w = parentDiv.node().getBoundingClientRect().width;
+        h = parentDiv.node().getBoundingClientRect().height;
+        var transform = d3.event.transform;
+
+        // Update the viewBox based on the zoom transformation
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var oldX = parseFloat(viewBox[0]);
+            var oldY = parseFloat(viewBox[1]);
+
+            var newWidth = w / transform.k;
+            var newHeight = h / transform.k;
+            zoomk=transform.k;
+            return [oldX, oldY, newWidth, newHeight].join(" ");
+        });
+    }
+
+    function draggedd() {
+
+        var dx = d3.event.dx;
+        var dy = d3.event.dy;
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var newX = parseFloat(viewBox[0]) - dx;
+            var newY = parseFloat(viewBox[1]) - dy;
+            var parentWidth = parseFloat(viewBox[2]);
+            var parentHeight = parseFloat(viewBox[3]);
+            return [newX, newY, parentWidth, parentHeight].join(" ");
+        });
+    }
+
+    //Window resize handlers
+
+    window.addEventListener("resize", function () {
+            updateSimulationCenter();
+            updateViewBox();
+
+        });
+
+    function updateViewBox() {
+        var parentWidth = parentDiv.node().getBoundingClientRect().width;
+        var parentHeight = parentDiv.node().getBoundingClientRect().height;
+        var newWidth = parentWidth / zoomk
+        var newHeight = parentHeight / zoomk
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var x = parseFloat(viewBox[0]) ;
+            var y = parseFloat(viewBox[1]);
+            return [x, y, newWidth, newHeight].join(" ");
+        });
+
+
+    }
+
+    function updateSimulationCenter() {
+            var parentWidth = parentDiv.node().getBoundingClientRect().width;
+            var parentHeight = parentDiv.node().getBoundingClientRect().height;
+
+            // Update the center force of the simulation
+            simulation.force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
+                .alpha(1)  // Restart the simulation to take the changes into account
+                .restart();
+        }
+
+
   </script>

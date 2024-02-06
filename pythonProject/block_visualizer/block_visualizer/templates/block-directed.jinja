@@ -29,28 +29,22 @@
 
     var parentDiv = d3.select("#main");
 
-        var parentWidth = parentDiv.node().getBoundingClientRect().width;
+    var parentWidth = parentDiv.node().getBoundingClientRect().width;
     var parentHeight = parentDiv.node().getBoundingClientRect().height;
+
+    //zoom var
+    var zoomk=1
 
     var svg = parentDiv.append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("viewBox", "0 0 " + parentWidth + " " + parentHeight)
         .attr("pointer-events", "all")
-        .call(d3.drag().on("drag", draggedd));
+        .call(d3.drag().on("drag", draggedd))
+        .call(d3.zoom().on("zoom", handleZoom));
 
-      function draggedd() {
-        parentWidth = parentDiv.node().getBoundingClientRect().width;
-        parentHeight = parentDiv.node().getBoundingClientRect().height;
-        var dx = d3.event.dx;
-        var dy = d3.event.dy;
-        svg.attr("viewBox", function () {
-            var viewBox = this.getAttribute("viewBox").split(" ");
-            var newX = parseFloat(viewBox[0]) - dx;
-            var newY = parseFloat(viewBox[1]) - dy;
-            return [newX, newY, parentWidth, parentHeight].join(" ");
-        });
-    }
+
+
 
     // Force Simulation
     var simulation = d3.forceSimulation(nodes.concat(selfLoops))
@@ -191,31 +185,6 @@
             .attr("y", function (d) {return d.y+20; });
     });
 
-    window.addEventListener("resize", function () {
-            // Update the force simulation center on resize
-            updateSimulationCenter();
-            updateViewBox();
-
-        });
-
-    function updateViewBox() {
-        var parentWidth = parentDiv.node().getBoundingClientRect().width;
-        var parentHeight = parentDiv.node().getBoundingClientRect().height;
-
-        svg.attr("viewBox", "0 0 " + parentWidth + " " + parentHeight);
-    }
-
-
-    function updateSimulationCenter() {
-            var parentWidth = parentDiv.node().getBoundingClientRect().width;
-            var parentHeight = parentDiv.node().getBoundingClientRect().height;
-
-            // Update the center force of the simulation
-            simulation.force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
-                .alpha(1)  // Restart the simulation to take the changes into account
-                .restart();
-        }
-
 
     // Drag functions
     function dragstarted(d) {
@@ -234,6 +203,75 @@
         d.fx = null;
         d.fy = null;
     }
+
+
+    //Pan and zoom functions
+
+    function handleZoom() {
+        w = parentDiv.node().getBoundingClientRect().width;
+        h = parentDiv.node().getBoundingClientRect().height;
+        var transform = d3.event.transform;
+
+        // Update the viewBox based on the zoom transformation
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var oldX = parseFloat(viewBox[0]);
+            var oldY = parseFloat(viewBox[1]);
+
+            var newWidth = w / transform.k;
+            var newHeight = h / transform.k;
+            zoomk=transform.k;
+            return [oldX, oldY, newWidth, newHeight].join(" ");
+        });
+    }
+
+    function draggedd() {
+
+        var dx = d3.event.dx;
+        var dy = d3.event.dy;
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var newX = parseFloat(viewBox[0]) - dx;
+            var newY = parseFloat(viewBox[1]) - dy;
+            var parentWidth = parseFloat(viewBox[2]);
+            var parentHeight = parseFloat(viewBox[3]);
+            return [newX, newY, parentWidth, parentHeight].join(" ");
+        });
+    }
+
+    //Window resize handlers
+
+    window.addEventListener("resize", function () {
+            updateSimulationCenter();
+            updateViewBox();
+
+        });
+
+    function updateViewBox() {
+        var parentWidth = parentDiv.node().getBoundingClientRect().width;
+        var parentHeight = parentDiv.node().getBoundingClientRect().height;
+        var newWidth = parentWidth / zoomk
+        var newHeight = parentHeight / zoomk
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var x = parseFloat(viewBox[0]) ;
+            var y = parseFloat(viewBox[1]);
+            return [x, y, newWidth, newHeight].join(" ");
+        });
+
+
+    }
+
+    function updateSimulationCenter() {
+            var parentWidth = parentDiv.node().getBoundingClientRect().width;
+            var parentHeight = parentDiv.node().getBoundingClientRect().height;
+
+            // Update the center force of the simulation
+            simulation.force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
+                .alpha(1)  // Restart the simulation to take the changes into account
+                .restart();
+        }
+
 
 
   </script>

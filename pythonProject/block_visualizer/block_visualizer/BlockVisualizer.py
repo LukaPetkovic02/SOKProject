@@ -16,7 +16,6 @@ class BlockVisualizer:
     def visualizeGraph(self,graph:Graph):
         p = Path(__file__).parent/"templates" # sample relative path
 
-        print(p)
         templateLoader = FileSystemLoader(searchpath=p)
         templateEnv = Environment(loader=templateLoader)
 
@@ -29,7 +28,4 @@ class BlockVisualizer:
         template = templateEnv.get_template(TEMPLATE_FILE)
         outputText = template.render(graph_nodes=graph.nodes, graph_edges=graph.edges)
 
-        print(outputText)
         return outputText
-
-
