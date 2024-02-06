@@ -13,27 +13,23 @@ from api.model.ConcreteEdge import ConcreteEdge
 class BlockVisualizer:
 
 
-    def visualizeGraph(self):
+    def visualizeGraph(self,graph:Graph):
         p = Path(__file__).parent/"templates" # sample relative path
-        print(p)
-
-        g=Graph(True)
-        n1=ConcreteNode(name="aa")
-        n2=ConcreteNode(name="bb")
-        e1=ConcreteEdge(n1,n2)
-
-        g.add_node(n1)
-        g.add_node(n2)
-        g.add_edge(e1)
 
         print(p)
         templateLoader = FileSystemLoader(searchpath=p)
         templateEnv = Environment(loader=templateLoader)
-        TEMPLATE_FILE = "block-directed.jinja"
+
+        if(graph.directed):
+            TEMPLATE_FILE = "block-directed.jinja"
+        else:TEMPLATE_FILE = "block.jinja"
+
+
 
         template = templateEnv.get_template(TEMPLATE_FILE)
-        outputText = template.render(graph_nodes=g.nodes, graph_edges=g.edges)
+        outputText = template.render(graph_nodes=graph.nodes, graph_edges=graph.edges)
 
         print(outputText)
         return outputText
+
 
