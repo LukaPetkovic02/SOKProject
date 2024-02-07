@@ -20,7 +20,9 @@ class XMLDataSourcePlugin(DataSourceService):
         for node_data in data:
             node_id = node_data.get('id')
             node_name = node_data.get('name')
-            node = ConcreteNode(name=node_name)
+            node_data_dict = {}
+            node_data_dict['age'] = int(node_data.get('age'))
+            node = ConcreteNode(name=node_name, data=node_data_dict)
             nodes[node_id] = node
             graph.add_node(node)
 
