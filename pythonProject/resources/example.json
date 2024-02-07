@@ -11,7 +11,7 @@
     {
         "id": "6616c598-0a0a-8263-7a56-fb0c0e16225a",
         "name": "I'm first child",
-        "age": 35,
+        "age": 25,
         "children": [
             "3e61c2a5-b292-4a5c-b860-5824fd497511"
         ]
@@ -19,13 +19,13 @@
     {
         "id": "3e61c2a5-b292-4a5c-b860-5824fd497511",
         "name": "I'm the new child",
-        "age": 35,
+        "age": 20,
         "children": []
     },
     {
         "id": "940e60e4-9497-7c0d-3467-297ff8bb9ef2",
         "name": "I'm second child",
-        "age": 35,
+        "age": 45,
         "children": []
     }
 ]

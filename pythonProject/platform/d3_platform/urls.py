@@ -10,6 +10,7 @@ urlpatterns = [
     # doci ce do ucitavanja plugina, ciji je identifikator "ucitati_prodavnice_kod".
     path('ucitavanje/plugin/<str:file_name>', views.ucitavanje_plugin, name="ucitavanje_plugin"),
     path('search/<str:input>',views.search, name="search"),
+    path('filter', views.filter, name="filter_data"),
     path('reset',views.reset, name="reset"),
     # path('primer1', views.primer1, name="primer1"),
     # path('primer2', views.primer2, name="primer2"),

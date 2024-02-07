@@ -94,13 +94,16 @@
         }
 
         .fileSearchContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
             text-align: center;
             line-height: 35px;
             font-size: 18px;
         }
 
         .fileInputField {
-            padding: 6px;
+            padding: 4px;
             border: 1px solid #ccc;
             border-radius: 4px;
             margin-right: 10px;
@@ -110,8 +113,19 @@
             font-size: 16px;
         }
 
+        #comparator {
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            width: 65px;
+            font-size: 16px;
+        }
+
         .fileInputButton {
-            padding: 6px 14px;
+            padding: 4px 14px;
             background-color: #4CAF50;
             margin-top: 2px;
             margin-bottom: 2px;
@@ -128,7 +142,7 @@
         }
 
         .resetButton {
-            padding: 6px 14px;
+            padding: 4px 14px;
             background-color: red;
             margin-top: 2px;
             margin-bottom: 2px;
@@ -145,12 +159,18 @@
         }
 
         .filterContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
             text-align: center;
             line-height: 34px;
             font-size: 18px;
         }
 
         .appliedQueriesContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
             text-align: center;
             line-height: 35px;
             font-size: 18px;
@@ -208,52 +228,52 @@
                             &nbsp;
                             <input id="fileInputField" class="fileInputField" type="text" />
                             <button id="fileInputButton" class="fileInputButton">Submit</button>
-
+                        </div>
+                        <div>
                             Search phrase:
                             &nbsp;
                             <input id="searchInputField" class="fileInputField" type="text" />
                             <button id="searchInputButton" class="fileInputButton">Search</button>
-
-                            <button id="resetButton" class="resetButton">Reset all queries</button>
                         </div>
-
-                        <!-- {% if plugini_ucitavanje %}
-                        <div>
-                             {% for p in plugini_ucitavanje %}
-                                {{p.name}}
-                                &nbsp;
-                             {% endfor %}
-                        </div>
-                        {% else %}
-                            <div>Nema prepoznatih plugina za ucitavanje</div>
-                        {% endif %} -->
                     </div>
                     <div class="breakline"></div>
-                    <div class="filterContainer">Here goes Filter
-<!--                    {% if graph %}-->
-<!--                        <div>-->
-<!--                             {% for p in graph.nodes.values %}-->
-<!--                                {{p}}-->
-<!--                                &nbsp;-->
-<!--                             {% endfor %}-->
-<!--                        </div>-->
-<!--                        {% else %}-->
-<!--                            <div>Nema prepoznatog grafa</div>-->
-<!--                        {% endif %}-->
+                    <div class="filterContainer">
+                        <div>
+                            Filter:
+                            &nbsp;
+                            <input id="propertyInputField" placeholder="Property" class="fileInputField" type="text" />
+                            &nbsp;
+                            <select id="comparator">
+                                <option value="<"><</option>
+                                <option value="<="><=</option>
+                                <option value=">">></option>
+                                <option value=">=">>=</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                            </select>
+                            &nbsp;
+                            <input id="valueInputField" placeholder="Value" class="fileInputField" type="text" />
+                            <button id="filterInputButton" class="fileInputButton">Filter</button>
+                        </div>
+                        <div></div>
                     </div>
                     <div class="breakline"></div>
                     <div class="appliedQueriesContainer">
-                        {% if queries %}
                         <div>
-                            Queries:
-                             {% for p in queries %}
-                                {{p}}
+                            {% if queries %}
+                            <div>
+                                Queries:
                                 &nbsp;
-                             {% endfor %}
-                        </div>
-                        {% else %}
-                            <div>No queries</div>
+                                 {% for p in queries %}
+                                    {{p}}
+                                    {% if not forloop.last %}&nbsp;,{% endif %}
+                                 {% endfor %}
+                            </div>
+                            {% else %}
+                            <div>No queries &nbsp;</div>
                         {% endif %}
+                        </div>
+                        <button id="resetButton" class="resetButton">Reset all queries</button>
                     </div>
                     <div class="breakline"></div>
                 </div>
@@ -279,6 +299,20 @@
             searchButton.addEventListener('click', function() {
                 var input = document.querySelector('#searchInputField').value;
                 var url = '/search/' + input;
+                window.location.href = url;
+            });
+
+            var filterButton = document.querySelector('#filterInputButton');
+
+            filterButton.addEventListener('click', function() {
+                var property = document.querySelector('#propertyInputField').value;
+
+                var selectElement = document.getElementById('comparator');
+                var selectedIndex = selectElement.selectedIndex;
+                var operator = selectElement.options[selectedIndex].value;
+
+                var value = document.querySelector('#valueInputField').value;
+                var url = '/filter?property=' + encodeURIComponent(property) + '&operator=' + encodeURIComponent(operator) + '&value=' + encodeURIComponent(value);
                 window.location.href = url;
             });
 
