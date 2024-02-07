@@ -24,7 +24,7 @@ def index(request):
     if(graph==None):
         print("NE POSTOJI JOS")
     else:
-        str=plugins_visualizers[1].visualizeGraph(graph)
+        str=plugins_visualizers[0].visualizeGraph(graph)
         for node_id, node in graph.nodes.items():
             print(f"{node_id} {node.name} {node.get_data()}")
 

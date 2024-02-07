@@ -6,7 +6,9 @@
 
             {
                 id:"{{key}}",
-                name:"{{ value.name }}"
+                name:"{{ value.name }}",
+                attr:{{ value.get_data() }}
+
             },
 
         {% endfor %}
@@ -49,11 +51,10 @@
 
     // Force Simulation
     var simulation = d3.forceSimulation(nodes.concat(selfLoops))
-        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 300; })) // Set the desired distance between nodes
-        .force("charge", d3.forceManyBody().strength(-200)) // Set a low repulsion force
-        .force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
-        .force("x", d3.forceX(parentWidth / 2).strength(0.05))
-        .force("y", d3.forceY(parentHeight / 2).strength(0.05))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 300; }))
+// Set the desired distance between nodes
+        .force("x", d3.forceX(parentWidth / 2).strength(0.01))
+        .force("y", d3.forceY(parentHeight / 2).strength(0.01))
         .force("collide", d3.forceCollide().strength(1).radius( (d) => 120  ).iterations(1));
 
 
@@ -75,7 +76,7 @@
         .attr("markerWidth", 12)
         .attr("markerHeight", 12)
         .attr("xoverflow", "visible");
-    marker.append("svg:path")
+        marker.append("svg:path")
         .attr("d", "M 0,-5 L 10 ,0 L 0,5")
         .attr("fill", "black");
 
@@ -119,7 +120,7 @@
         .data(nodes)
         .enter().append("rect")  // Append rectangles
         .attr("width", 200)  // Set the width of the rectangle
-        .attr("height", 100)  // Set the height of the rectangle
+        .attr("height", 100 )  // Set the height of the rectangle
         .attr("fill", "#000")
 
         .call(d3.drag()
@@ -127,29 +128,44 @@
         .on("drag", dragged)
         .on("end", dragended));
 
-    // Text inside the Circle
-    var text = svg.append("g").selectAll("text")
-      .data(nodes)
-      .enter().append("text")
-        .text(function(d) { return d.name; })
-        .attr("fill", "#fff")  // Set text color
-        .attr("font-size", "12px")  // Set text font size
-        .attr("text-anchor", "left")  // Center the text horizontally
-        .attr("dy", ".35em");  // Adjust vertical alignment of text
+    var texts=[]
 
+        //adding name
+    let text=svg.append("g")
+            .selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                // Modify d.name to include line breaks where needed
+                return "name:"+d.name;
+            })
+            .attr("fill", "#fff")  // Set text color
+            .attr("font-size", "12px")  // Set text font size
+            .attr("text-anchor", "left")  // Align text to the left
+            .attr("dy", ".35em");  // Adjust vertical alignment of text
 
-    var label = svg.append("g").selectAll("text")
-    .data(nodes)
-    .enter().append("text")
-        .text(function(d) { return d.id })
-        .attr("fill", "#fff")  // Set text color
-        .attr("font-size", "10px")  // Set text font size
-        .attr("text-anchor", "left")  // Center the text horizontally
-        .attr("dy", "1.2em"); // Center the text vertically
+    texts.push(text)
 
-    // Tooltip Creation
-    node.append("title")
-        .text(d => d.name);
+    for (const [key, value] of Object.entries(nodes[0].attr)) {
+      console.log(key, value);
+      let text=svg.append("g")
+            .selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                // Modify d.name to include line breaks where needed
+                return key+":"+d.attr[key];
+            })
+            .attr("fill", "#fff")  // Set text color
+            .attr("font-size", "12px")  // Set text font size
+            .attr("text-anchor", "left")  // Align text to the left
+            .attr("dy", ".35em");  // Adjust vertical alignment of text
+
+        texts.push(text)
+    }
+
 
     // Simulation Event
     simulation.on("tick", () => {
@@ -177,13 +193,14 @@
             .attr("x", d => d.x - 20)  // Adjust position based on rectangle width
             .attr("y", d => d.y - 15);  // Adjust position based on rectangle height
 
-        // Update text position with nodes
-        text
-            .attr("x", function(d) { return d.x-10; })
-            .attr("y", function(d) { return d.y; });
 
-        label.attr("x", function(d){ return d.x-10; })
-            .attr("y", function (d) {return d.y+20; });
+        for (let i = 0; i < texts.length; i++) {
+            texts[i]
+            .attr("x", function(d) { return d.x-10; })
+            .attr("y", function(d) { return d.y+(5+(17*i)); });
+        }
+
+
     });
 
 
@@ -268,7 +285,8 @@
             var parentHeight = parentDiv.node().getBoundingClientRect().height;
 
             // Update the center force of the simulation
-            simulation.force("center", d3.forceCenter(parentWidth / 2, parentHeight / 2))
+            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.03))
+                .force("y", d3.forceY(parentHeight / 2).strength(0.03))
                 .alpha(1)  // Restart the simulation to take the changes into account
                 .restart();
         }

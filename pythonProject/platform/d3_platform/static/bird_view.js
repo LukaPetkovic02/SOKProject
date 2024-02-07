@@ -1,7 +1,7 @@
 
 window.onload = function() {
     function copySVG() {
-        var container=document.getElementById('graph_svg');
+        console.log("copy")
         var containerMain=document.getElementById('graph_svg');
         var originalSVG = document.getElementById('graph_svg');
         var copiedSVGContainer = document.getElementById('bird_view_container');
@@ -49,37 +49,6 @@ window.onload = function() {
 
     // Call the function to copy SVG initially
     copySVG();
-
-    // Update the copied SVG whenever the original SVG changes
-
-      function handleAttributeChanges(mutationsList, observer) {
-    mutationsList.forEach(mutation => {
-      if (mutation.type === 'attributes' && isInsideSvg(mutation.target)) {
-        copySVG()
-      }
-    });
-  }
-
-  // Function to check if an element or any of its ancestors is an SVG element
-  function isInsideSvg(element) {
-    while (element) {
-      if (element.tagName === 'svg' || element.tagName === 'SVG') {
-        return true;
-      }
-      element = element.parentNode;
-    }
-    return false;
-  }
-
-  // Select the target SVG element
-  const targetSvg = document.getElementById('graph_svg');
-
-  // Create a MutationObserver to watch for changes to attributes
-  const observer = new MutationObserver(handleAttributeChanges);
-
-  // Configure the MutationObserver to observe changes in attributes of the target SVG or its children
-  const config = { attributes: true, subtree: true };
-
   // Start observing the target SVG for attribute changes
-  observer.observe(targetSvg, config);
+  setInterval(copySVG, 50);
 }
