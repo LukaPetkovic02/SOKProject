@@ -194,7 +194,9 @@
             background-color: grey;
         }
         .graph_view{
-            height: inherit;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             background: aliceblue;
         }
     </style>
@@ -217,7 +219,9 @@
                     <div class="breakline"></div>
                     <div class="treeViewContainer">Here goes treeView</div>
                     <div class="breakline"></div>
-                    <div class="birdViewContainer">Here goes birdView</div>
+                    <div id="bird_view_container" class="birdViewContainer">
+                        <script type="text/javascript" src="../static/bird_view.js"></script>
+                    </div>
                 </div>
             </div>
             <div class="rightSide">
