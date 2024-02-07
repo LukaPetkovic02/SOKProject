@@ -1,15 +1,9 @@
 from abc import ABC, abstractmethod
 
+from api.model.Graph import Graph
+
 
 class Visualizer(ABC):
     @abstractmethod
-    def generate_graph(self, graph):
-        pass
-
-    @abstractmethod
-    def generate_directed_graph(self, graph):
-        pass
-
-    @abstractmethod
-    def generate_undirected_graph(self, graph):
+    def visualizeGraph(self, graph:Graph):
         pass
