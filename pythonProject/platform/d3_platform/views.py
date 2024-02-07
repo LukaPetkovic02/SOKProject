@@ -1,5 +1,6 @@
 import os
 import copy
+from datetime import datetime
 
 from api.model.Graph import Graph
 from django.apps.registry import apps
@@ -23,7 +24,7 @@ def index(request):
     if(graph==None):
         print("NE POSTOJI JOS")
     else:
-        str=plugins_visualizers[0].visualizeGraph(graph)
+        str=plugins_visualizers[1].visualizeGraph(graph)
         for node_id, node in graph.nodes.items():
             print(f"{node_id} {node.name} {node.get_data()}")
 
@@ -81,6 +82,62 @@ def search(request, input):
     return redirect("/")
 
 
+def filter(request):
+    property = request.GET.get('property').strip()
+    operator = request.GET.get('operator').strip()
+    value = request.GET.get('value').strip()
+    query = property + " " + operator + " " + value
+
+    if not (property and operator and value):
+        return redirect("/")
+
+    graph = D3PlatformConfig.graph
+    if graph is None:
+        return redirect("/")
+
+    filtered_nodes = {}
+    filtered_edges = {}
+    property_upper = property.upper()
+    for node_id, node in graph.nodes.items():
+        if property_upper == "NAME":
+            if not isinstance(value, str):
+                return redirect("/")
+            result = compare(node.name, value, operator)
+            if result:
+                filtered_nodes[node_id] = node
+        else:
+            node_data = node.get_data()
+            for key, val in node_data.items():
+                if key.upper() == property_upper:
+                    try:
+                        value = type(val)(value)
+                    except ValueError:
+                        return redirect("/")
+                    result = compare(val, value, operator)
+                    if result:
+                        filtered_nodes[node_id] = node
+                    break
+
+    for edge_id, edge in graph.edges.items():
+        if edge.node1.id in filtered_nodes and edge.node2.id in filtered_nodes:
+            filtered_edges[edge_id] = edge
+
+    filtered_graph = Graph(graph.directed)
+    filtered_graph.nodes = filtered_nodes
+    filtered_graph.edges = filtered_edges
+
+    whole_graph_copy = copy.deepcopy(D3PlatformConfig.whole_graph)
+
+    D3PlatformConfig.graph = filtered_graph
+
+    D3PlatformConfig.whole_graph = whole_graph_copy
+
+    queries = D3PlatformConfig.queries
+    queries.append(query)
+
+    return redirect("/")
+
+
 def ucitavanje_plugin(request, file_name):
     _, file_extension = os.path.splitext(file_name)
     file_extension = file_extension[1:]
@@ -100,3 +157,20 @@ def ucitavanje_plugin(request, file_name):
     D3PlatformConfig.graph = graph
     D3PlatformConfig.whole_graph = copy.deepcopy(graph)
     return redirect("/")
+
+
+
+def compare(x, y, operator):
+    if operator == '<':
+        return x < y
+    elif operator == '<=':
+        return x <= y
+    elif operator == '>':
+        return x > y
+    elif operator == '>=':
+        return x >= y
+    elif operator == '==':
+        return x == y
+    elif operator == '!=':
+        return x != y
+    return False;
