@@ -12,12 +12,14 @@ window.onload = function() {
         w=containerMain.clientWidth;
         h=containerMain.clientHeight
 
+        birdViewHeight=5000
+        birdViewWidth=5000
 
-        var offsetX = (w - 3000) / 2;
-        var offsetY = (h - 3000) / 2;
+        var offsetX = (w - birdViewHeight) / 2;
+        var offsetY = (h - birdViewWidth) / 2;
 
 
-        copiedSVG.setAttribute('viewBox', offsetX+' '+offsetY+' '+3000+' 3000');
+        copiedSVG.setAttribute('viewBox', offsetX+' '+offsetY+' '+birdViewWidth+' '+birdViewHeight);
 
 
         // Remove the ID attribute to prevent duplicate IDs
