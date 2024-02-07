@@ -1,14 +1,11 @@
 
   <script>
-
     var nodes = [
         {% for key, value in graph_nodes.items() %}
 
             {
                 id:"{{key}}",
                 name:"{{ value.name }}",
-                attr:{{ value.get_data() }}
-
             },
 
         {% endfor %}
@@ -16,17 +13,24 @@
 
     var links = [
         {% for key, value in graph_edges.items() %}
-
-            {
-                source:"{{value.node1.id}}",
-                target:"{{ value.node2.id }}"
-            },
-
+            {% if value.node1.id != value.node2.id %}
+            	{
+                    source:"{{value.node1.id}}",
+                    target:"{{ value.node2.id }}"
+                },
+            {% endif %}
         {% endfor %}
     ]
 
-
     var selfLoops = [
+        {% for key, value in graph_edges.items() %}
+            {% if value.node1.id == value.node2.id %}
+            	{
+                    source:"{{value.node1.id}}",
+                    target:"{{ value.node2.id }}"
+                },
+            {% endif %}
+        {% endfor %}
     ];
 
     var parentDiv = d3.select("#main");
@@ -39,51 +43,33 @@
 
     var svg = parentDiv.append("svg")
         .attr("width", "100%")
-        .attr("height", "100%")
         .attr("id","graph_svg")
+        .attr("height", "100%")
         .attr("viewBox", "0 0 " + parentWidth + " " + parentHeight)
         .attr("pointer-events", "all")
         .call(d3.drag().on("drag", draggedd))
         .call(d3.zoom().on("zoom", handleZoom));
 
 
-
+        // Update SVG dimensions when the window resizes
 
     // Force Simulation
     var simulation = d3.forceSimulation(nodes.concat(selfLoops))
-        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 300; }))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 150; }))
 // Set the desired distance between nodes
         .force("x", d3.forceX(parentWidth / 2).strength(0.01))
         .force("y", d3.forceY(parentHeight / 2).strength(0.01))
-        .force("collide", d3.forceCollide().strength(1).radius( (d) => 120  ).iterations(1));
-
-    // Arrowhead Definition
-    var marker = svg.append("defs").append("marker")
-        .attr("id", "arrowhead")
-        .attr("viewBox", "-0 -5 10 10")
-        .attr("refX", 30)
-        .attr("refY", 0)
-        .attr("orient", "auto")
-        .attr("markerWidth", 12)
-        .attr("markerHeight", 12)
-        .attr("xoverflow", "visible");
-        marker.append("svg:path")
-        .attr("d", "M 0,-5 L 10 ,0 L 0,5")
-        .attr("fill", "black");
+        .force("collide", d3.forceCollide().strength(1).radius( (d) => 60  ).iterations(1));
 
     // Link Creation
     var link = svg.append("g")
         .attr("stroke", "#999")
         .attr("stroke-opacity", 0.6)
-        .selectAll("path")
+        .selectAll("line")
         .data(links)
-        .enter().append("path")
+        .enter().append("line")
         .attr("stroke-width", 1)  // Adjust stroke width as needed
-        .attr("marker-end", "url(#arrowhead)")
-        .attr("fill", "none")
-        .attr("class", "link")
-        .attr("id", function(d, i) { return "link" + i; })
-        .attr("curved", function(d) { return d.curved ? "true" : "false"; });
+        .attr("stroke", "#999");  // Remove arrowheads
 
     // Self-loop Creation
     var selfLoop = svg.append("g")
@@ -102,60 +88,32 @@
           return "M " + (x + r) + "," + y + " A " + (r*1.5) + "," + (r*1.5) + " 0 1,0 " + (x - r) + "," + y; // Dynamically calculate the self-loop path
         });
 
-    // Node Creation
-   // Node Creation
     var node = svg.append("g")
         .attr("stroke", "#fff")
         .attr("stroke-width", 1.5)
-        .selectAll("rect")  // Use rectangles instead of circles
+        .selectAll("circle")
         .data(nodes)
-        .enter().append("rect")  // Append rectangles
-        .attr("width", 200)  // Set the width of the rectangle
-        .attr("height", 100 )  // Set the height of the rectangle
+        .enter().append("circle")
+        .attr("r", 20)
         .attr("fill", "#000")
-
         .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
 
-    var texts=[]
+    // Text inside the Circle
+    var text = svg.append("g").selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .text(function(d) { return d.name; })
+        .attr("fill", "#fff")  // Set text color
+        .attr("font-size", "12px")  // Set text font size
+        .attr("text-anchor", "middle")  // Center the text horizontally
+        .attr("dy", ".35em");  // Adjust vertical alignment of text
 
-        //adding name
-    let text=svg.append("g")
-            .selectAll("text")
-            .data(nodes)
-            .enter()
-            .append("text")
-            .text(function(d) {
-                // Modify d.name to include line breaks where needed
-                return "name:"+d.name;
-            })
-            .attr("fill", "#fff")  // Set text color
-            .attr("font-size", "12px")  // Set text font size
-            .attr("text-anchor", "left")  // Align text to the left
-            .attr("dy", ".35em");  // Adjust vertical alignment of text
-
-    texts.push(text)
-
-    for (const [key, value] of Object.entries(nodes[0].attr)) {
-      console.log(key, value);
-      let text=svg.append("g")
-            .selectAll("text")
-            .data(nodes)
-            .enter()
-            .append("text")
-            .text(function(d) {
-                // Modify d.name to include line breaks where needed
-                return key+":"+d.attr[key];
-            })
-            .attr("fill", "#fff")  // Set text color
-            .attr("font-size", "12px")  // Set text font size
-            .attr("text-anchor", "left")  // Align text to the left
-            .attr("dy", ".35em");  // Adjust vertical alignment of text
-
-        texts.push(text)
-    }
+    // Tooltip Creation
+    node.append("title")
+        .text(d => d.name);
 
 
     // Simulation Event
@@ -181,21 +139,17 @@
             });
 
         node
-            .attr("x", d => d.x - 20)  // Adjust position based on rectangle width
-            .attr("y", d => d.y - 15);  // Adjust position based on rectangle height
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
 
-
-        for (let i = 0; i < texts.length; i++) {
-            texts[i]
-            .attr("x", function(d) { return d.x-10; })
-            .attr("y", function(d) { return d.y+(5+(17*i)); });
-        }
-
-
+        // Update text position with nodes
+        text
+            .attr("x", function(d) { return d.x; })
+            .attr("y", function(d) { return d.y; });
     });
 
-
     // Drag functions
+
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -283,8 +237,4 @@
         }
 
 
-
   </script>
-
-
-

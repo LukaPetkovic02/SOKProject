@@ -1,16 +1,10 @@
+from api.model.abstract.Visualizer import Visualizer
 from api.model.Graph import Graph
-from api.model.abstract.Node import Node
-from api.model.abstract.Edge import Edge
 from jinja2 import Template, Environment, FileSystemLoader
 from pathlib import Path
-from uuid import uuid4
-
-from api.model.ConcreteNode import ConcreteNode
-
-from api.model.ConcreteEdge import ConcreteEdge
 
 
-class BlockVisualizer:
+class BlockVisualizer(Visualizer):
 
 
     def visualizeGraph(self,graph:Graph):
