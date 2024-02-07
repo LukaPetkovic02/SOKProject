@@ -38,6 +38,7 @@
     var svg = parentDiv.append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
+        .attr("id","graph_svg")
         .attr("viewBox", "0 0 " + parentWidth + " " + parentHeight)
         .attr("pointer-events", "all")
         .call(d3.drag().on("drag", draggedd))
