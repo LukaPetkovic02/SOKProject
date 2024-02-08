@@ -24,18 +24,10 @@ def index(request):
     if(graph==None):
         print("NE POSTOJI JOS")
     else:
-        str=plugins_visualizers[0].visualizeGraph(graph)
-        for node_id, node in graph.nodes.items():
-            print(f"{node_id} {node.name} {node.get_data()}")
+        if(D3PlatformConfig.activeVisualizer!=None):
+            str=D3PlatformConfig.activeVisualizer.visualizeGraph(graph)
 
-    print("WHOLEEE")
-    if (whole_graph == None):
-        print("NE POSTOJI JOS")
-    else:
-        for node_id, node in whole_graph.nodes.items():
-            print(f"{node_id} {node.name} {node.get_data()}")
-    return render(request, "my_template.html", {"plugini_ucitavanje": plugini,
-                                                "graph":graph, "queries":queries, "graph_view":str})
+    return render(request, "my_template.html", {"plugini_ucitavanje": plugini, "graph":graph, "queries":queries, "graph_view":str,"visualizerIndex":D3PlatformConfig.activeVisualizerIndex})
 def reset(request):
     whole_graph = D3PlatformConfig.whole_graph
     D3PlatformConfig.graph = whole_graph
@@ -157,6 +149,27 @@ def ucitavanje_plugin(request, file_name):
     D3PlatformConfig.graph = graph
     D3PlatformConfig.whole_graph = copy.deepcopy(graph)
     return redirect("/")
+
+def ucitavanje_visualizer(request, selectedOption=""):
+    plugini = apps.get_app_config('d3_platform').visualizer_plugins
+
+    for i in plugini:
+        if(str(i)=="BlockVisualizer" and selectedOption=="0"):
+            print("block")
+            D3PlatformConfig.activeVisualizer=i
+            D3PlatformConfig.activeVisualizerIndex="0"
+            return redirect("/")
+        elif(str(i)=="SimpleVisualizer" and selectedOption=="1"):
+            print("simple")
+            D3PlatformConfig.activeVisualizer = i
+            D3PlatformConfig.activeVisualizerIndex="1"
+            return redirect("/")
+
+    D3PlatformConfig.activeVisualizer = None
+    D3PlatformConfig.activeVisualizerIndex = selectedOption
+    return redirect("/")
+
+
 
 
 

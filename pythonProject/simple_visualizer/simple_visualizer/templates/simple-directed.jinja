@@ -76,8 +76,8 @@
     var simulation = d3.forceSimulation(nodes.concat(selfLoops))
         .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 150; }))
         // Set the desired distance between nodes
-        .force("x", d3.forceX(parentWidth / 2).strength(0.01))
-        .force("y", d3.forceY(parentHeight / 2).strength(0.01))
+        .force("x", d3.forceX(parentWidth / 2).strength(0.05))
+        .force("y", d3.forceY(parentHeight / 2).strength(0.05))
         .force("collide", d3.forceCollide().strength(1).radius( (d) => 60  ).iterations(1));
 
     // Arrowhead Definition
@@ -268,8 +268,8 @@
             var parentHeight = parentDiv.node().getBoundingClientRect().height;
 
             // Update the center force of the simulation
-            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.03))
-                .force("y", d3.forceY(parentHeight / 2).strength(0.03))
+            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.05))
+                .force("y", d3.forceY(parentHeight / 2).strength(0.05))
                 .alpha(1)  // Restart the simulation to take the changes into account
                 .restart();
         }

@@ -10,11 +10,14 @@ class D3PlatformConfig(AppConfig):
     queries = []
     whole_graph = None
     graph = None
+    activeVisualizer=None
+    activeVisualizerIndex=""
     def ready(self):
         # Prilikom startovanja aplikacije, ucitavamo plugine na
         # vec poznati nacin.
         self.plugini_ucitavanje = load_plugins("graph.load")
         self.visualizer_plugins=load_plugins("graph.visualize")
+
         self.queries = []
         self.whole_graph=None
         self.graph=None

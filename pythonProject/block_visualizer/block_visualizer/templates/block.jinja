@@ -249,8 +249,8 @@
             var parentHeight = parentDiv.node().getBoundingClientRect().height;
 
             // Update the center force of the simulation
-            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.03))
-                .force("y", d3.forceY(parentHeight / 2).strength(0.03))
+            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.05))
+                .force("y", d3.forceY(parentHeight / 2).strength(0.05))
                 .alpha(1)  // Restart the simulation to take the changes into account
                 .restart();
         }
