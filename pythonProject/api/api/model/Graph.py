@@ -62,57 +62,19 @@ class Graph:
         return False
 
     def valid_edge(self, node1: Node, node2: Node) -> bool:
-        for edge in graph.edges.values():
+        for edge in self.edges.values():
             if edge.node1.id == node1.id and edge.node2.id == node2.id:
                 return False
             if not self._directed and edge.node1.id == node2.id and edge.node2.id == node1.id:
                 return False
         return True
 
+    def serialize(self):
+        serialized_nodes = [node.to_json() for node_id, node in self.nodes.items()]
+        serialized_edges = [edge.to_json() for edge_id, edge in self.edges.items()]
 
-
-# ovo je samo primer kako se implementira klasa Node i Edge
-# class ConcreteNode(Node):
-#     def __init__(self, **kwargs):
-#         super(ConcreteNode, self).__init__(**kwargs)
-#         self._data = kwargs.get("data", None)
-#
-#     def get_data(self):
-#         return self._data
-#
-# class ConcreteEdge(Edge):
-#     def __init__(self, node1: Node, node2: Node):
-#         super(ConcreteEdge, self).__init__(node1=node1, node2=node2)
-
-
-graph = Graph(False)
-
-# concrete_node = ConcreteNode(name="My Node")
-# print("node1: ")
-# print(concrete_node.to_json())
-#
-# concrete_node2 = ConcreteNode(name="My Node 2")
-# print("node2: ")
-# print(concrete_node2.to_json())
-#
-# concrete_edge = ConcreteEdge(node1=concrete_node, node2=concrete_node2)
-# print("edge1: ")
-# print(concrete_edge.to_json())
-#
-# concrete_edge2 = ConcreteEdge(node1=concrete_node2, node2=concrete_node)
-# print("edge2: ")
-# print(concrete_edge2.to_json())
-#
-#
-# print(graph.add_edge(concrete_edge))
-# print(graph.add_node(concrete_node))
-# print(graph.add_node(concrete_node2))
-# print(graph.add_edge(concrete_edge))
-# print(graph.add_edge(concrete_edge))
-# print(graph.add_edge(concrete_edge2))
-#
-# for edge in graph.edges.values():
-#     print(edge.to_json())
-#
-# for node in graph.nodes.values():
-#     print(node.to_json())
+        return {
+            "nodes": serialized_nodes,
+            "edges": serialized_edges,
+            "directed": self.directed
+        }

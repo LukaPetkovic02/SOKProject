@@ -10,6 +10,7 @@ from .apps import D3PlatformConfig
 
 
 def index(request):
+    print("Joe")
     plugini = apps.get_app_config('d3_platform').plugini_ucitavanje
     plugins_visualizers=apps.get_app_config('d3_platform').visualizer_plugins
     graph = D3PlatformConfig.graph
@@ -21,13 +22,18 @@ def index(request):
    # return render(request, "my_template.html", {"plugini_ucitavanje": plugini,"graph":graph,"graph_view":str})
     whole_graph = D3PlatformConfig.whole_graph
     queries = D3PlatformConfig.queries
+    serialized_graph = {
+        "nodes":[],
+        "edges": [],
+        "directed": False
+    }
     if(graph==None):
         print("NE POSTOJI JOS")
     else:
+        serialized_graph = graph.serialize()
         if(D3PlatformConfig.activeVisualizer!=None):
             str=D3PlatformConfig.activeVisualizer.visualizeGraph(graph)
-
-    return render(request, "my_template.html", {"plugini_ucitavanje": plugini, "graph":graph, "queries":queries, "graph_view":str,"visualizerIndex":D3PlatformConfig.activeVisualizerIndex})
+    return render(request, "my_template.html", {"plugini_ucitavanje": plugini,"graph":graph, "queries":queries, "graph_view":str,"visualizerIndex":D3PlatformConfig.activeVisualizerIndex ,"nodesDict":serialized_graph["nodes"], "edgesDict":serialized_graph["edges"], "directedValue":serialized_graph["directed"]})
 def reset(request):
     whole_graph = D3PlatformConfig.whole_graph
     D3PlatformConfig.graph = whole_graph
