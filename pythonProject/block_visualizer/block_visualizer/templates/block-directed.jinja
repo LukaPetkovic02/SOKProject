@@ -15,18 +15,41 @@
     ]
 
     var links = [
+        {% set foo = [] %}
         {% for key, value in graph_edges.items() %}
-
-            {
-                source:"{{value.node1.id}}",
-                target:"{{ value.node2.id }}"
-            },
-
+            {% set _ = foo.append(False) %}
+            {% if value.node1.id != value.node2.id %}
+                {% for key2, value2 in graph_edges.items() %}
+                    {% if value.node1.id == value2.node2.id and value.node2.id == value2.node1.id %}
+                        {% set _ = foo.append(True) %}
+                    {% endif %}
+                {% endfor %}
+                {% if not foo[-1] %}
+                    {
+                        source: "{{ value.node1.id }}",
+                        target: "{{ value.node2.id }}"
+                    },
+                {% else %}
+                    {
+                        source: "{{ value.node1.id }}",
+                        target: "{{ value.node2.id }}",
+                        curved: true
+                    },
+                {% endif %}
+            {% endif %}
         {% endfor %}
     ]
 
 
     var selfLoops = [
+        {% for key, value in graph_edges.items() %}
+            {% if value.node1.id == value.node2.id %}
+            	{
+                    source:"{{value.node1.id}}",
+                    target:"{{ value.node2.id }}"
+                },
+            {% endif %}
+        {% endfor %}
     ];
 
     var parentDiv = d3.select("#main");
