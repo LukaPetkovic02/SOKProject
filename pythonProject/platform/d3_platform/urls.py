@@ -9,6 +9,7 @@ urlpatterns = [
     # Kada korisnik pogodi ovaj endpoint (http://127.0.0.1:8000/ucitavanje/plugin/ucitati_prodavnice_kod),
     # doci ce do ucitavanja plugina, ciji je identifikator "ucitati_prodavnice_kod".
     path('ucitavanje/plugin/<str:file_name>', views.ucitavanje_plugin, name="ucitavanje_plugin"),
+    path('ucitavanje/visualizer/<str:selectedOption>', views.ucitavanje_visualizer, name="ucitavanje_visualizer"),
     path('search/<str:input>',views.search, name="search"),
     path('filter', views.filter, name="filter_data"),
     path('reset',views.reset, name="reset"),

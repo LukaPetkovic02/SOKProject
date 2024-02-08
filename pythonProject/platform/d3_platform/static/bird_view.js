@@ -1,7 +1,6 @@
 
 window.onload = function() {
     function copySVG() {
-        console.log("copy")
         var containerMain=document.getElementById('graph_svg');
         var originalSVG = document.getElementById('graph_svg');
         var copiedSVGContainer = document.getElementById('bird_view_container');

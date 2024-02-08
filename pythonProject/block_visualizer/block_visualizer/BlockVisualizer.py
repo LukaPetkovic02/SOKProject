@@ -6,6 +6,8 @@ from pathlib import Path
 
 class BlockVisualizer(Visualizer):
 
+    def __str__(self):
+        return 'BlockVisualizer'
 
     def visualizeGraph(self,graph:Graph):
         p = Path(__file__).parent/"templates" # sample relative path

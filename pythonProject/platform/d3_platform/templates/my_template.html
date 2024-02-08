@@ -46,6 +46,9 @@
             background-color: lightgreen;
             width: 100%;
             display: flex;
+            padding: 10px;
+            gap: 5px;
+            flex-direction: column;
         }
 
         .simpleViewButton,
@@ -210,9 +213,15 @@
                     <h1 class="graphVisualiserTitle">Graph Visualizer</h1>
                     <div class="breakline"></div>
                     <div class="viewButtons">
-                        <a class="simpleViewButton">Simple View</a>
-                        <div class="breaklineVerticalButtons"></div>
-                        <a class="blockViewButton">Block View</a>
+<!--                        <a class="simpleViewButton">Simple View</a>-->
+<!--                        <div class="breaklineVerticalButtons"></div>-->
+<!--                        <a class="blockViewButton">Block View</a>-->
+                        <label style="margin-left: auto;margin-right: auto"  >
+                            Block-0 Simple-1
+                        </label>
+                        <label style="margin-left: auto;margin-right: auto">
+                            <input id="visualizer_input" style="width: 30px;height: 30px; font-size: 20px;text-align: center" value="{{visualizerIndex}}" >
+                        </label>
                     </div>
                 </div>
                 <div class="viewContainer">
@@ -297,6 +306,20 @@
                 var url = '/ucitavanje/plugin/' + id;
                 window.location.href = url;
             });
+
+            var visualizerInput=document.querySelector('#visualizer_input');
+
+            visualizerInput.addEventListener("input", function(event) {
+                var input = visualizerInput.value;
+
+                if(input==="1" || input==="0"){
+                    var url = '/ucitavanje/visualizer/' + input;
+                    window.location.href = url;
+                }
+
+            });
+
+
 
             var searchButton = document.querySelector('#searchInputButton');
 
