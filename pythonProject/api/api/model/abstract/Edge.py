@@ -34,9 +34,9 @@ class Edge(ABC):
 
     def to_json(self):
         return{
-            "id": self.id,
-            "node1": self.node1.id,
-            "node2": self.node2.id
+            "id": str(self.id),
+            "node1": str(self.node1.id),
+            "node2": str(self.node2.id)
         }
 
     def __str__(self):

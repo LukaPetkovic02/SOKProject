@@ -69,7 +69,7 @@
         .treeViewContainer {
             background-color: lightpink;
             height: 60%;
-            text-align: center;
+            text-align: left;
             font-size: 18px;
         }
 
@@ -202,6 +202,25 @@
             flex-direction: column;
             background: aliceblue;
         }
+
+        .node {
+            margin-left: 20px; /* Adjust as needed */
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .toggle {
+            margin-right: 5px;
+        }
+
+        .children {
+            margin-left: 10px; /* Adjust as needed */
+        }
+
+        .details {
+            margin-left: 20px; /* Adjust as needed */
+            padding: 5px;
+        }
     </style>
     <body>
         <div>
@@ -226,7 +245,18 @@
                 </div>
                 <div class="viewContainer">
                     <div class="breakline"></div>
-                    <div class="treeViewContainer">Here goes treeView</div>
+
+                    <div id="tree" class="treeViewContainer" style="overflow-y: auto; max-height: 510px;">
+                        {% for node in nodesDict %}
+                            <div class="node" data-node-id="{{ node.id }}">
+                                <span class="toggle">+</span>
+                                <span class="node-name">{{ node.name }}</span>
+                                <div class="details" style="display: none;"></div>
+                                <div class="children" style="display: none;"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
                     <div class="breakline"></div>
                     <div id="bird_view_container" class="birdViewContainer">
                         <script type="text/javascript" src="../static/bird_view.js"></script>
@@ -297,7 +327,11 @@
         </div>
     </body>
     <script>
+
+
+
         document.addEventListener('DOMContentLoaded', function() {
+
 
             var button = document.querySelector('#fileInputButton');
 
@@ -318,8 +352,6 @@
                 }
 
             });
-
-
 
             var searchButton = document.querySelector('#searchInputButton');
 
@@ -349,6 +381,94 @@
                 var url = '/reset';
                 window.location.href = url;
             });
+
+            var nodes = {{nodesDict|safe}};
+            var edges = {{edgesDict|safe}};
+            var directed = '{{directedValue}}'==="True";
+
+            document.getElementById('tree').addEventListener('click', function(event) {
+                if (event.target.classList.contains('toggle')) {
+                    toggleNode(event.target.parentElement);
+                }
+            });
+
+            // Function to toggle node expansion
+            function toggleNode(node) {
+                var nodeId = node.getAttribute('data-node-id');
+                var children = node.querySelector('.children');
+                var details = node.querySelector('.details');
+
+                if (children.style.display === 'none') {
+                    children.style.display = 'block';
+                    details.style.display = 'block';
+                    node.querySelector('.toggle').textContent = '-';
+
+                    fetchNodeDetails(nodeId, details);
+                    fetchNodeChildren(nodeId, children);
+                } else {
+                    children.style.display = 'none';
+                    details.style.display = 'none';
+                    node.querySelector('.toggle').textContent = '+';
+                }
+            }
+
+            function fetchNodeDetails(nodeId, detailsElement) {
+                if (detailsElement.innerHTML === '') {
+                    for(i in nodes){
+                        let node = nodes[i];
+                        if(node.id === nodeId){
+                            for(details in node.data){
+                                console.log(details)
+                                if (detailsElement.innerHTML !== ''){
+                                    detailsElement.innerHTML +="\n"
+                                }
+
+                                detailsElement.innerHTML += details+" : "+node.data[details];
+                            }
+                        }
+                    }
+                }
+            }
+
+            function fetchNodeChildren(nodeId, childrenElement) {
+                if(childrenElement.innerHTML === ''){
+                    for(i in edges){
+                        let edge = edges[i];
+                        if(nodeId === edge.node1 || (!directed && nodeId === edge.node2)){
+                            let child;
+
+                            if(directed) {
+                                child = getNode(edge.node2);
+                            } else {
+                                child = getNode(edge.node1);
+                            }
+
+                            if(child == null){
+                                console.log("ERRR");
+                            }else{
+                                childrenElement.innerHTML += `
+                                    <div class="node" data-node-id=`+ child.id +`>
+                                        <span class="toggle">+</span>
+                                        <span class="node-name">`+ child.name +`</span>
+                                        <div class="details" style="display: none;"></div>
+                                        <div class="children" style="display: none;"></div>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function getNode(nodeId){
+                for(i in nodes){
+                    let node = nodes[i];
+                    if(node.id === nodeId){
+                        return node;
+                    }
+                }
+                return null;
+            }
         });
     </script>
 </html>

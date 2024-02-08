@@ -24,7 +24,7 @@ class Node(ABC):
 
     def to_json(self):
         return {
-            "id": self.id,
+            "id": str(self.id),
             "name": self.name,
             "data": self.get_data()
         }
