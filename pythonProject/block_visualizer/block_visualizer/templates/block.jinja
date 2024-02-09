@@ -116,7 +116,7 @@
             var documentObject = d3.select('body').node().ownerDocument;
             var startEvent = new CustomEvent("node-clicked", { detail: clickedNodeId });
                 documentObject.dispatchEvent(startEvent)
-        })
+        });
 
     texts=[]
 

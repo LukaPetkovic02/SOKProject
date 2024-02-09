@@ -418,6 +418,15 @@
                 if (children.style.display === 'none') {
                     children.style.display = 'block';
                     details.style.display = 'block';
+                    colorBlack();
+                    var sEvent = new CustomEvent("node-clicked-tree", { detail: nodeId });
+                    var nodeNameElement = node.querySelector('.node-name');
+                    if (nodeNameElement) {
+                        nodeNameElement.style.color = 'red';
+                    } else {
+                        console.log("Node name element not found");
+                    }
+
                     node.querySelector('.toggle').textContent = '-';
 
                     fetchNodeDetails(nodeId, details);
@@ -486,13 +495,34 @@
         });
 
         document.addEventListener("node-clicked", (event) => {
-    // Access the custom parameters passed with the event
-            var customParams = event.detail;
-
-            // Use the parameters as needed
+            var selectedId = event.detail;
             console.log("Node clicked!");
-            console.log("Custom parameters:", customParams);
+            console.log("Custom parameters:", selectedId);
+
+            var nodeElement = document.querySelector('.node[data-node-id="' + selectedId + '"]');
+
+            colorBlack();
+
+            if (nodeElement) {
+                var nodeNameElement = nodeElement.querySelector('.node-name');
+                if (nodeNameElement) {
+                    nodeNameElement.style.color = 'red';
+                } else {
+                    console.log("Node name element not found");
+                }
+            } else {
+                console.log("Node element not found");
+            }
+
         });
+
+        function colorBlack(){
+            var nodeNames = document.querySelectorAll('#tree .node-name');
+
+            nodeNames.forEach(function(nodeName) {
+                nodeName.style.color = 'black';
+            });
+        }
 
     </script>
 </html>
