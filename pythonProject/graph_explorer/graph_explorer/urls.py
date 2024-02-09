@@ -20,6 +20,5 @@ from .views import my_view
 
 urlpatterns = [
     path('', include('d3_platform.urls')),
-    path('polls/', include('polls.urls')),
     path('admin/', admin.site.urls),
 ]

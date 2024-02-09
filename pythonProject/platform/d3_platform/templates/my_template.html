@@ -434,14 +434,11 @@
                 if(childrenElement.innerHTML === ''){
                     for(i in edges){
                         let edge = edges[i];
-                        if(nodeId === edge.node1 || (!directed && nodeId === edge.node2)){
+                        if(nodeId === edge.node1){
                             let child;
 
-                            if(directed) {
-                                child = getNode(edge.node2);
-                            } else {
-                                child = getNode(edge.node1);
-                            }
+                            child = getNode(edge.node2);
+
 
                             if(child == null){
                                 console.log("ERRR");

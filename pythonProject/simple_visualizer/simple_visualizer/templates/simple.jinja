@@ -118,16 +118,11 @@
 
     // Simulation Event
     simulation.on("tick", () => {
-        link.attr("d", function(d) {
-            if (d.curved) {
-                var dx = d.target.x - d.source.x,
-                    dy = d.target.y - d.source.y,
-                    dr = Math.sqrt(dx * dx + dy * dy);
-                return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-            } else {
-                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
-            }
-        });
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
 
         selfLoop
             .attr("d", function(d) {
