@@ -1,6 +1,5 @@
 from django.urls import path
 
-from d3_platform import graph_view
 
 from . import views
 
@@ -18,9 +17,6 @@ urlpatterns = [
     # path('primer3', views.primer3, name="primer3"),
     #
     # path('primer4', views.primer4, name="primer4"),
-
-    path('graph/force/layout', graph_view.force_layout, name="graph_force_layout"),
-    path('graph/tree/layout', graph_view.tree_layout, name="graph_tree_layout"),
 
     # path('primer/pan/zoom', views.primerPanZoom, name="primerPanZoom"),
 ]

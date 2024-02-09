@@ -19,6 +19,7 @@
     <entity id="5" name="Emily" age="45">
         <children>
             <child ref="6"/>
+            <child ref="5"/>
         </children>
     </entity>
     <entity id="6" name="William" age="22">
