@@ -418,6 +418,16 @@
                 if (children.style.display === 'none') {
                     children.style.display = 'block';
                     details.style.display = 'block';
+                    colorBlack();
+                    var sEvent = new CustomEvent("node-clicked-tree", { detail: nodeId });
+                    document.dispatchEvent(sEvent)
+                    var nodeNameElement = node.querySelector('.node-name');
+                    if (nodeNameElement) {
+                        nodeNameElement.style.color = 'red';
+                    } else {
+                        console.log("Node name element not found");
+                    }
+
                     node.querySelector('.toggle').textContent = '-';
 
                     fetchNodeDetails(nodeId, details);
@@ -484,5 +494,56 @@
                 return null;
             }
         });
+
+        document.addEventListener("node-clicked", (event) => {
+            var selectedId = event.detail;
+            console.log("Node clicked!");
+            console.log("Custom parameters:", selectedId);
+
+            var nodeElement = document.querySelector('.node[data-node-id="' + selectedId + '"]');
+
+            colorBlack();
+
+            if (nodeElement) {
+                var nodeNameElement = nodeElement.querySelector('.node-name');
+                if (nodeNameElement) {
+                    nodeNameElement.style.color = 'red';
+                } else {
+                    console.log("Node name element not found");
+                }
+            } else {
+                console.log("Node element not found");
+            }
+
+        });
+
+        document.addEventListener("node-clicked-tree", (event) => {
+
+            var clickedNodeId = event.detail;
+            // Select nodes with the specific ID and change their color
+            svg.selectAll("rect")
+                 .attr("fill", function(d) {
+            // If the node's ID matches the clicked node's ID, color it red
+            // Otherwise, color it black
+            return d.id === clickedNodeId ? "red" : "black";
+            });
+
+            svg.selectAll("circle")
+                .attr("fill", function(d) {
+            // If the node's ID matches the clicked node's ID, color it red
+            // Otherwise, color it black
+            return d.id === clickedNodeId ? "red" : "black";
+            });
+
+        });
+
+        function colorBlack(){
+            var nodeNames = document.querySelectorAll('#tree .node-name');
+
+            nodeNames.forEach(function(nodeName) {
+                nodeName.style.color = 'black';
+            });
+        }
+
     </script>
 </html>

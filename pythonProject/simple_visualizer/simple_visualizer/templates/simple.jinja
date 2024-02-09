@@ -99,7 +99,21 @@
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended));
+            .on("end", dragended))
+            .on("click", function(event, d) {
+
+                var clickedNodeId = d3.select(this).datum().id;
+
+                svg.selectAll('circle')
+                .attr('fill', 'black');
+
+                d3.select(this)
+                .attr('fill', 'red');
+
+                var documentObject = d3.select('body').node().ownerDocument;
+                var startEvent = new CustomEvent("node-clicked", { detail: clickedNodeId });
+                    documentObject.dispatchEvent(startEvent)
+            });
 
     // Text inside the Circle
     var text = svg.append("g").selectAll("text")

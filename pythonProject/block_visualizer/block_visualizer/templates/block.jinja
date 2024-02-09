@@ -102,8 +102,21 @@
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
-        .on("end", dragended));
+        .on("end", dragended))
+        .on("click", function(event, d) {
 
+            var clickedNodeId = d3.select(this).datum().id;
+
+            svg.selectAll('rect')
+            .attr('fill', 'black');
+
+            d3.select(this)
+            .attr('fill', 'red');
+
+            var documentObject = d3.select('body').node().ownerDocument;
+            var startEvent = new CustomEvent("node-clicked", { detail: clickedNodeId });
+                documentObject.dispatchEvent(startEvent)
+        });
 
     texts=[]
 
@@ -262,6 +275,7 @@
                 .alpha(1)  // Restart the simulation to take the changes into account
                 .restart();
         }
+
 
 
   </script>
