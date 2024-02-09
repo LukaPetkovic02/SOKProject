@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from api.model.Graph import Graph
-from model.Person import Person
-from model.PersonEdge import PersonEdge
+from model.Account import Account
+from model.AccountEdge import AccountEdge
 from api.service.DataSourceService import DataSourceService
 
 
@@ -25,7 +25,7 @@ class XMLDataSourcePlugin(DataSourceService):
             for child in node_data.findall('children/child'):
                 children.append(child.get('ref'))
 
-            node = Person(name=node_name, email=node_data.get('email'), password=node_data.get('password'), phone=node_data.get('phone'), children=children)
+            node = Account(name=node_name, email=node_data.get('email'), password=node_data.get('password'), phone=node_data.get('phone'), children=children)
             nodes[node_id] = node
             graph.add_node(node)
 
@@ -35,7 +35,6 @@ class XMLDataSourcePlugin(DataSourceService):
             if children is not None:
                 for child in children.findall('child'):
                     child_id = child.get('ref')
-                    edge = PersonEdge(nodes[node_id], nodes[child_id])
+                    edge = AccountEdge(nodes[node_id], nodes[child_id])
                     graph.add_edge(edge)
-
         return graph

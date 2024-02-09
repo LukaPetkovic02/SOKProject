@@ -158,7 +158,6 @@ def ucitavanje_plugin(request, file_name):
 
 def ucitavanje_visualizer(request, selectedOption=""):
     plugini = apps.get_app_config('d3_platform').visualizer_plugins
-
     for i in plugini:
         if(str(i)=="BlockVisualizer" and selectedOption=="0"):
             print("block")

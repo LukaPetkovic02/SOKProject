@@ -1,9 +1,9 @@
 from api.model.abstract.Node import Node
 
 
-class Person(Node):
+class Account(Node):
     def __init__(self, **kwargs):
-        super(Person, self).__init__(**kwargs)
+        super(Account, self).__init__(**kwargs)
         # self._data = kwargs.get("data", None)
         self._email = kwargs.get("email", None)
         self._password = kwargs.get("password", None)
