@@ -20,14 +20,12 @@ class XMLDataSourcePlugin(DataSourceService):
         for node_data in data:
             node_id = node_data.get('id')
             node_name = node_data.get('name')
-            node_data_dict = {}
-            node_data_dict['age'] = int(node_data.get('age'))
 
             children = []
             for child in node_data.findall('children/child'):
                 children.append(child.get('ref'))
 
-            node = Person(name=node_name, age=int(node_data.get('age')), children=children)
+            node = Person(name=node_name, email=node_data.get('email'), password=node_data.get('password'), phone=node_data.get('phone'), children=children)
             nodes[node_id] = node
             graph.add_node(node)
 

@@ -49,5 +49,5 @@ window.onload = function() {
     // Call the function to copy SVG initially
     copySVG();
   // Start observing the target SVG for attribute changes
-  setInterval(copySVG, 50);
+  setInterval(copySVG, 500);
 }
