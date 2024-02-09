@@ -1,14 +1,9 @@
 import json
 
-from api.model.ConcreteEdge import ConcreteEdge
-from api.model.ConcreteNode import ConcreteNode
 from api.service.DataSourceService import DataSourceService
 from api.model.Graph import Graph
-from api.model.ConcreteEdge import ConcreteEdge
-from api.model.ConcreteNode import ConcreteNode
-
-
-from api.model.Graph import Graph
+from model.Person import Person
+from model.PersonEdge import PersonEdge
 
 
 class JSONDataSourcePlugin(DataSourceService):
@@ -27,7 +22,7 @@ class JSONDataSourcePlugin(DataSourceService):
                 node_name = node_data['name']
                 node_data_dict={}
                 node_data_dict['age'] = node_data['age']
-                node = ConcreteNode(name=node_name, data=node_data_dict)
+                node = Person(name=node_name, age=node_data['age'], children=node_data['children'])
                 nodes[node_id] = node
                 graph.add_node(node)
 
@@ -35,7 +30,7 @@ class JSONDataSourcePlugin(DataSourceService):
                 node_id = node_data['id']
                 children_ids = node_data['children']
                 for child_id in children_ids:
-                    edge = ConcreteEdge(nodes[node_id], nodes[child_id])
+                    edge = PersonEdge(nodes[node_id], nodes[child_id])
                     graph.add_edge(edge)
 
             return graph

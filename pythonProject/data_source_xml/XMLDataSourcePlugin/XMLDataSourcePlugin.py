@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from api.model.Graph import Graph
-from api.model.ConcreteEdge import ConcreteEdge
-from api.model.ConcreteNode import ConcreteNode
+from model.Person import Person
+from model.PersonEdge import PersonEdge
 from api.service.DataSourceService import DataSourceService
 
 
@@ -22,7 +22,12 @@ class XMLDataSourcePlugin(DataSourceService):
             node_name = node_data.get('name')
             node_data_dict = {}
             node_data_dict['age'] = int(node_data.get('age'))
-            node = ConcreteNode(name=node_name, data=node_data_dict)
+
+            children = []
+            for child in node_data.findall('children/child'):
+                children.append(child.get('ref'))
+
+            node = Person(name=node_name, age=int(node_data.get('age')), children=children)
             nodes[node_id] = node
             graph.add_node(node)
 
@@ -32,20 +37,7 @@ class XMLDataSourcePlugin(DataSourceService):
             if children is not None:
                 for child in children.findall('child'):
                     child_id = child.get('ref')
-                    edge = ConcreteEdge(nodes[node_id], nodes[child_id])
+                    edge = PersonEdge(nodes[node_id], nodes[child_id])
                     graph.add_edge(edge)
 
         return graph
-
-# if __name__ == "__main__": # ovo mozete zakomentarisati ako vam bude smetalo
-#     xml_file_path = "../resources/example.xml"
-#     graph = parse_xml_to_graph(xml_file_path)
-#
-#     print("Undirected graph")
-#     print("Nodes:")
-#     for node in graph.nodes.values():
-#         print(node)
-# 
-#     print("\nEdges:")
-#     for edge in graph.edges.values():
-#         print(edge)
