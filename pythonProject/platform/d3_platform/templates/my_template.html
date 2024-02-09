@@ -484,5 +484,15 @@
                 return null;
             }
         });
+
+        document.addEventListener("node-clicked", (event) => {
+    // Access the custom parameters passed with the event
+            var customParams = event.detail;
+
+            // Use the parameters as needed
+            console.log("Node clicked!");
+            console.log("Custom parameters:", customParams);
+        });
+
     </script>
 </html>
