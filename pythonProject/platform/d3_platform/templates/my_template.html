@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        {% load static %}
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    </head>
+    <style>
+        body,
+        html {
+            font-family: "Roboto", sans-serif;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+        }
+
+        .leftSide {
+            width: 22%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visualizerHeader {
+            background-color: lightblue;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .graphVisualiserTitle {
+            font-size: 28px;
+        }
+
+        button.simpleViewButton,
+        button.blockViewButton {
+            flex: 1;
+            text-align: center;
+            height: 35px;
+            line-height: 35px;
+            font-size: 18px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        .viewButtons {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            background-color: lightgreen;
+        }
+
+        .viewContainer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .treeViewContainer {
+            background-color: lightpink;
+            height: 60%;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        .birdViewContainer {
+            background-color: lightgrey;
+            height: 40%;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .rightSide {
+            background-color: lightseagreen;
+            display: flex;
+            flex-direction: column;
+            width: 78%;
+            height: 100%;
+        }
+
+        .rightSideHeader {
+            background-color: lightsalmon;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 106px;
+        }
+
+        .fileSearchContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+        .fileInputField {
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        #comparator {
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            width: 65px;
+            font-size: 16px;
+        }
+
+        .fileInputButton {
+            padding: 4px 14px;
+            background-color: #4CAF50;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .fileInputButton:hover {
+            background-color: #45a049;
+        }
+
+        .resetButton {
+            padding: 4px 14px;
+            background-color: red;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .resetButton:hover {
+            background-color: darkred;
+        }
+
+        .filterContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            text-align: center;
+            line-height: 34px;
+            font-size: 18px;
+        }
+
+        .appliedQueriesContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+        .breakline {
+            height: 1px;
+            background-color: grey;
+            width: 100%;
+        }
+
+        .breaklineVertical {
+            height: 100%;
+            width: 1px;
+            background-color: grey;
+        }
+
+        .breaklineVerticalButtons {
+            height: 35px;
+            width: 1px;
+            background-color: grey;
+        }
+        .graph_view{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: aliceblue;
+        }
+
+        .node {
+            margin-left: 20px; /* Adjust as needed */
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .toggle {
+            margin-right: 5px;
+        }
+
+        .children {
+            margin-left: 10px; /* Adjust as needed */
+        }
+
+        .details {
+            margin-left: 20px; /* Adjust as needed */
+            padding: 5px;
+        }
+    </style>
+    <body>
+        <div>
+
+          </div>
+        <div class="mainContainer">
+            <div class="leftSide">
+                <div class="visualizerHeader">
+                    <h1 class="graphVisualiserTitle">Graph Visualizer</h1>
+                    <div class="breakline"></div>
+                    <div class="viewButtons">
+                        <button class="simpleViewButton">Simple View</button>
+                        <div class="breaklineVerticalButtons"></div>
+                        <button class="blockViewButton">Block View</button>
+<!--                        <label style="margin-left: auto;margin-right: auto"  >-->
+<!--                            Block-0 Simple-1-->
+<!--                        </label>-->
+<!--                        <label style="margin-left: auto;margin-right: auto">-->
+<!--                            <input id="visualizer_input" style="width: 30px;height: 30px; font-size: 20px;text-align: center" value="{{visualizerIndex}}" >-->
+<!--                        </label>-->
+                    </div>
+                </div>
+                <div class="viewContainer">
+                    <div class="breakline"></div>
+
+                    <div id="tree" class="treeViewContainer" style="overflow-y: auto; max-height: 510px;">
+                        {% for node in nodesDict %}
+                            <div class="node" data-node-id="{{ node.id }}">
+                                <span class="toggle">+</span>
+                                <span class="node-name">{{ node.name }}</span>
+                                <div class="details" style="display: none;"></div>
+                                <div class="children" style="display: none;"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="breakline"></div>
+                    <div id="bird_view_container" class="birdViewContainer">
+                        <script type="text/javascript" src="../static/bird_view.js"></script>
+                    </div>
+                </div>
+            </div>
+            <div class="rightSide">
+                <div class="rightSideHeader">
+                    <div class="fileSearchContainer">
+                        <div>
+                            File:
+                            &nbsp;
+                            <input id="fileInputField" class="fileInputField" type="text" />
+                            <button id="fileInputButton" class="fileInputButton">Submit</button>
+                        </div>
+                        <div>
+                            Search phrase:
+                            &nbsp;
+                            <input id="searchInputField" class="fileInputField" type="text" />
+                            <button id="searchInputButton" class="fileInputButton">Search</button>
+                        </div>
+                    </div>
+                    <div class="breakline"></div>
+                    <div class="filterContainer">
+                        <div>
+                            Filter:
+                            &nbsp;
+                            <input id="propertyInputField" placeholder="Property" class="fileInputField" type="text" />
+                            &nbsp;
+                            <select id="comparator">
+                                <option value="<"><</option>
+                                <option value="<="><=</option>
+                                <option value=">">></option>
+                                <option value=">=">>=</option>
+                                <option value="==">==</option>
+                                <option value="!=">!=</option>
+                            </select>
+                            &nbsp;
+                            <input id="valueInputField" placeholder="Value" class="fileInputField" type="text" />
+                            <button id="filterInputButton" class="fileInputButton">Filter</button>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="breakline"></div>
+                    <div class="appliedQueriesContainer">
+                        <div>
+                            {% if queries %}
+                            <div>
+                                Queries:
+                                &nbsp;
+                                 {% for p in queries %}
+                                    {{p}}
+                                    {% if not forloop.last %}&nbsp;,{% endif %}
+                                 {% endfor %}
+                            </div>
+                            {% else %}
+                            <div>No queries &nbsp;</div>
+                        {% endif %}
+                        </div>
+                        <button id="resetButton" class="resetButton">Reset all queries</button>
+                    </div>
+                    <div class="breakline"></div>
+                </div>
+                <div id="main" class="graph_view">
+                    {{graph_view|safe}}
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+
+            var button = document.querySelector('#fileInputButton');
+
+            button.addEventListener('click', function() {
+                var id = document.querySelector('#fileInputField').value;
+                var url = '/ucitavanje/plugin/' + id;
+                window.location.href = url;
+            });
+
+<!--            var visualizerInput=document.querySelector('#visualizer_input');-->
+
+<!--            visualizerInput.addEventListener("input", function(event) {-->
+<!--                var input = visualizerInput.value;-->
+
+<!--                if(input==="1" || input==="0"){-->
+<!--                    var url = '/ucitavanje/visualizer/' + input;-->
+<!--                    window.location.href = url;-->
+<!--                }-->
+
+<!--            });-->
+
+            var simpleButton = document.querySelector('.simpleViewButton');
+
+            simpleButton.addEventListener('click', function() {
+                var url = '/ucitavanje/visualizer/1';
+                window.location.href = url;
+            });
+
+            var blockButton = document.querySelector('.blockViewButton');
+
+            blockButton.addEventListener('click', function() {
+                var url = '/ucitavanje/visualizer/0';
+                window.location.href = url;
+            });
+
+            var searchButton = document.querySelector('#searchInputButton');
+
+            searchButton.addEventListener('click', function() {
+                var input = document.querySelector('#searchInputField').value;
+                var url = '/search/' + input;
+                window.location.href = url;
+            });
+
+            var filterButton = document.querySelector('#filterInputButton');
+
+            filterButton.addEventListener('click', function() {
+                var property = document.querySelector('#propertyInputField').value;
+
+                var selectElement = document.getElementById('comparator');
+                var selectedIndex = selectElement.selectedIndex;
+                var operator = selectElement.options[selectedIndex].value;
+
+                var value = document.querySelector('#valueInputField').value;
+                var url = '/filter?property=' + encodeURIComponent(property) + '&operator=' + encodeURIComponent(operator) + '&value=' + encodeURIComponent(value);
+                window.location.href = url;
+            });
+
+            var resetButton = document.querySelector('#resetButton');
+
+            resetButton.addEventListener('click', function() {
+                var url = '/reset';
+                window.location.href = url;
+            });
+
+            var nodes = {{nodesDict|safe}};
+            var edges = {{edgesDict|safe}};
+            var directed = '{{directedValue}}'==="True";
+
+            document.getElementById('tree').addEventListener('click', function(event) {
+                if (event.target.classList.contains('toggle')) {
+                    toggleNode(event.target.parentElement);
+                }
+            });
+
+            // Function to toggle node expansion
+            function toggleNode(node) {
+                var nodeId = node.getAttribute('data-node-id');
+                var children = node.querySelector('.children');
+                var details = node.querySelector('.details');
+
+                if (children.style.display === 'none') {
+                    children.style.display = 'block';
+                    details.style.display = 'block';
+                    colorBlack();
+                    var sEvent = new CustomEvent("node-clicked-tree", { detail: nodeId });
+                    document.dispatchEvent(sEvent)
+                    var nodeNameElement = node.querySelector('.node-name');
+                    if (nodeNameElement) {
+                        nodeNameElement.style.color = 'red';
+                    } else {
+                        console.log("Node name element not found");
+                    }
+
+                    node.querySelector('.toggle').textContent = '-';
+
+                    fetchNodeDetails(nodeId, details);
+                    fetchNodeChildren(nodeId, children);
+                } else {
+                    children.style.display = 'none';
+                    details.style.display = 'none';
+                    node.querySelector('.toggle').textContent = '+';
+                }
+            }
+
+            function fetchNodeDetails(nodeId, detailsElement) {
+                if (detailsElement.innerHTML === '') {
+                    for(i in nodes){
+                        let node = nodes[i];
+                        if(node.id === nodeId){
+                            for(details in node.data){
+                                console.log(details)
+                                if (detailsElement.innerHTML !== ''){
+                                    detailsElement.innerHTML +="\n"
+                                }
+
+                                detailsElement.innerHTML += details+" : "+node.data[details];
+                            }
+                        }
+                    }
+                }
+            }
+
+            function fetchNodeChildren(nodeId, childrenElement) {
+                if(childrenElement.innerHTML === ''){
+                    for(i in edges){
+                        let edge = edges[i];
+                        if(nodeId === edge.node1){
+                            let child;
+
+                            child = getNode(edge.node2);
+
+
+                            if(child == null){
+                                console.log("ERRR");
+                            }else{
+                                childrenElement.innerHTML += `
+                                    <div class="node" data-node-id=`+ child.id +`>
+                                        <span class="toggle">+</span>
+                                        <span class="node-name">`+ child.name +`</span>
+                                        <div class="details" style="display: none;"></div>
+                                        <div class="children" style="display: none;"></div>
+                                    </div>
+                                `;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function getNode(nodeId){
+                for(i in nodes){
+                    let node = nodes[i];
+                    if(node.id === nodeId){
+                        return node;
+                    }
+                }
+                return null;
+            }
+        });
+
+        document.addEventListener("node-clicked", (event) => {
+            var selectedId = event.detail;
+            console.log("Node clicked!");
+            console.log("Custom parameters:", selectedId);
+
+            var nodeElement = document.querySelector('.node[data-node-id="' + selectedId + '"]');
+
+            colorBlack();
+
+            if (nodeElement) {
+                var nodeNameElement = nodeElement.querySelector('.node-name');
+                if (nodeNameElement) {
+                    nodeNameElement.style.color = 'red';
+                } else {
+                    console.log("Node name element not found");
+                }
+            } else {
+                console.log("Node element not found");
+            }
+
+        });
+
+        document.addEventListener("node-clicked-tree", (event) => {
+
+            var clickedNodeId = event.detail;
+            // Select nodes with the specific ID and change their color
+            svg.selectAll("rect")
+                 .attr("fill", function(d) {
+            // If the node's ID matches the clicked node's ID, color it red
+            // Otherwise, color it black
+            return d.id === clickedNodeId ? "red" : "black";
+            });
+
+            svg.selectAll("circle")
+                .attr("fill", function(d) {
+            // If the node's ID matches the clicked node's ID, color it red
+            // Otherwise, color it black
+            return d.id === clickedNodeId ? "red" : "black";
+            });
+
+        });
+
+        function colorBlack(){
+            var nodeNames = document.querySelectorAll('#tree .node-name');
+
+            nodeNames.forEach(function(nodeName) {
+                nodeName.style.color = 'black';
+            });
+        }
+
+    </script>
+</html>

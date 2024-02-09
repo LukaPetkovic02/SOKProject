@@ -1,0 +1,294 @@
+
+  <script>
+
+    var nodes = [
+        {% for key, value in graph_nodes.items() %}
+
+            {
+                id:"{{key}}",
+                name:"{{ value.name }}",
+            },
+
+        {% endfor %}
+    ]
+
+    var links = [
+        {% set foo = [] %}
+        {% for key, value in graph_edges.items() %}
+            {% set _ = foo.append(False) %}
+            {% if value.node1.id != value.node2.id %}
+                {% for key2, value2 in graph_edges.items() %}
+                    {% if value.node1.id == value2.node2.id and value.node2.id == value2.node1.id %}
+                        {% set _ = foo.append(True) %}
+                    {% endif %}
+                {% endfor %}
+                {% if not foo[-1] %}
+                    {
+                        source: "{{ value.node1.id }}",
+                        target: "{{ value.node2.id }}"
+                    },
+                {% else %}
+                    {
+                        source: "{{ value.node1.id }}",
+                        target: "{{ value.node2.id }}",
+                        curved: true
+                    },
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    ]
+
+
+    var selfLoops = [
+        {% for key, value in graph_edges.items() %}
+            {% if value.node1.id == value.node2.id %}
+            	{
+                    source:"{{value.node1.id}}",
+                    target:"{{ value.node2.id }}"
+                },
+            {% endif %}
+        {% endfor %}
+    ];
+
+    var parentDiv = d3.select("#main");
+
+    var parentWidth = parentDiv.node().getBoundingClientRect().width;
+    var parentHeight = parentDiv.node().getBoundingClientRect().height;
+
+    //zoom var
+    var zoomk=1
+
+    var svg = parentDiv.append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("id","graph_svg")
+        .attr("viewBox", "0 0 " + parentWidth + " " + parentHeight)
+        .attr("pointer-events", "all")
+        .call(d3.drag().on("drag", draggedd))
+        .call(d3.zoom().on("zoom", handleZoom));
+
+
+
+
+    // Force Simulation
+    var simulation = d3.forceSimulation(nodes.concat(selfLoops))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(function(d) { return 150; }))
+        // Set the desired distance between nodes
+        .force("x", d3.forceX(parentWidth / 2).strength(0.05))
+        .force("y", d3.forceY(parentHeight / 2).strength(0.05))
+        .force("collide", d3.forceCollide().strength(1).radius( (d) => 60  ).iterations(1));
+
+    // Arrowhead Definition
+    var marker = svg.append("defs").append("marker")
+        .attr("id", "arrowhead")
+        .attr("viewBox", "-0 -5 10 10")
+        .attr("refX", 27)
+        .attr("refY", 0)
+        .attr("orient", "auto")
+        .attr("markerWidth", 12)
+        .attr("markerHeight", 12)
+        .attr("xoverflow", "visible");
+        marker.append("svg:path")
+        .attr("d", "M 0,-5 L 10 ,0 L 0,5")
+        .attr("fill", "black");
+
+    // Link Creation
+    var link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("path")
+        .data(links)
+        .enter().append("path")
+        .attr("stroke-width", 1)  // Adjust stroke width as needed
+        .attr("marker-end", "url(#arrowhead)")
+        .attr("fill", "none")
+        .attr("class", "link")
+        .attr("id", function(d, i) { return "link" + i; })
+        .attr("curved", function(d) { return d.curved ? "true" : "false"; });
+
+    // Self-loop Creation
+    var selfLoop = svg.append("g")
+        .attr("fill", "none")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("path")
+        .data(selfLoops)
+        .enter().append("path")
+        .attr("class", "self-loop")
+        .attr("d", function(d) {
+          var node = nodes.find(node => node.id === d.source);
+          var r = 20; // Node radius
+          var x = node.x;
+          var y = node.y;
+          return "M " + (x + r) + "," + y + " A " + (r*1.5) + "," + (r*1.5) + " 0 1,0 " + (x - r) + "," + y; // Dynamically calculate the self-loop path
+        });
+
+    //node creation
+    var node = svg.append("g")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("r", 20)  // Adjust the radius of the circle to make it bigger
+        .attr("fill", "#000")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended))
+            .on("click", function(event, d) {
+
+                var clickedNodeId = d3.select(this).datum().id;
+
+                svg.selectAll('circle')
+                .attr('fill', 'black');
+
+                d3.select(this)
+                .attr('fill', 'red');
+
+                var documentObject = d3.select('body').node().ownerDocument;
+                var startEvent = new CustomEvent("node-clicked", { detail: clickedNodeId });
+                    documentObject.dispatchEvent(startEvent)
+            });
+
+    // Text inside the Circle
+    var text = svg.append("g").selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .text(function(d) { return d.name; })
+        .attr("fill", "#fff")  // Set text color
+        .attr("font-size", "12px")  // Set text font size
+        .attr("text-anchor", "middle")  // Center the text horizontally
+        .attr("dy", ".35em");  // Adjust vertical alignment of text
+
+    // Tooltip Creation
+    node.append("title")
+        .text(d => d.name);
+
+
+    // Simulation Event
+    simulation.on("tick", () => {
+        link.attr("d", function(d) {
+            if (d.curved) {
+                var dx = d.target.x - d.source.x,
+                    dy = d.target.y - d.source.y,
+                    dr = Math.sqrt(dx * dx + dy * dy);
+                return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+            } else {
+                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            }
+        });
+
+        selfLoop
+            .attr("d", function(d) {
+              var node = nodes.find(node => node.id === d.source);
+              var r = 20; // Node radius
+              var x = node.x;
+              var y = node.y;
+              return "M " + (x + r) + "," + y + " A " + (r*1.5) + "," + (r*1.5) + " 0 1,0 " + (x - r) + "," + y; // Dynamically calculate the self-loop path
+            });
+
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+
+        // Update text position with nodes
+        text
+            .attr("x", function(d) { return d.x; })
+            .attr("y", function(d) { return d.y; });
+    });
+
+
+    // Drag functions
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+
+    //Pan and zoom functions
+
+    function handleZoom() {
+        w = parentDiv.node().getBoundingClientRect().width;
+        h = parentDiv.node().getBoundingClientRect().height;
+        var transform = d3.event.transform;
+
+        // Update the viewBox based on the zoom transformation
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var oldX = parseFloat(viewBox[0]);
+            var oldY = parseFloat(viewBox[1]);
+
+            var newWidth = w / transform.k;
+            var newHeight = h / transform.k;
+            zoomk=transform.k;
+            return [oldX, oldY, newWidth, newHeight].join(" ");
+        });
+    }
+
+    function draggedd() {
+
+        var dx = d3.event.dx;
+        var dy = d3.event.dy;
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var newX = parseFloat(viewBox[0]) - dx;
+            var newY = parseFloat(viewBox[1]) - dy;
+            var parentWidth = parseFloat(viewBox[2]);
+            var parentHeight = parseFloat(viewBox[3]);
+            return [newX, newY, parentWidth, parentHeight].join(" ");
+        });
+    }
+
+    //Window resize handlers
+
+    window.addEventListener("resize", function () {
+            updateSimulationCenter();
+            updateViewBox();
+
+        });
+
+    function updateViewBox() {
+        var parentWidth = parentDiv.node().getBoundingClientRect().width;
+        var parentHeight = parentDiv.node().getBoundingClientRect().height;
+        var newWidth = parentWidth / zoomk
+        var newHeight = parentHeight / zoomk
+        svg.attr("viewBox", function () {
+            var viewBox = this.getAttribute("viewBox").split(" ");
+            var x = parseFloat(viewBox[0]) ;
+            var y = parseFloat(viewBox[1]);
+            return [x, y, newWidth, newHeight].join(" ");
+        });
+
+
+    }
+
+    function updateSimulationCenter() {
+            var parentWidth = parentDiv.node().getBoundingClientRect().width;
+            var parentHeight = parentDiv.node().getBoundingClientRect().height;
+
+            // Update the center force of the simulation
+            simulation.force("x", d3.forceX(parentWidth / 2).strength(0.05))
+                .force("y", d3.forceY(parentHeight / 2).strength(0.05))
+                .alpha(1)  // Restart the simulation to take the changes into account
+                .restart();
+        }
+
+
+
+  </script>
+
+
+
