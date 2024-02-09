@@ -22,7 +22,9 @@ class JSONDataSourcePlugin(DataSourceService):
                 node_name = node_data['name']
                 node_data_dict={}
                 node_data_dict['age'] = node_data['age']
-                node = Person(name=node_name, age=node_data['age'], children=node_data['children'])
+                node_data_dict['email'] = node_data['email']
+                node_data_dict['lastName'] = node_data['last_name']
+                node = Person(name=node_name, age=node_data['age'], email=node_data['email'], lastName=node_data['last_name'])
                 nodes[node_id] = node
                 graph.add_node(node)
 
